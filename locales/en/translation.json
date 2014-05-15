@@ -1,0 +1,29 @@
+{
+  "settings": "Web Page Settings",
+  "save": "Save",
+  "cancel": "Cancel",
+  "help": "Help",
+  "url": "URL*",
+  "scroll-horizontal": {
+    "label": "Horizontal Scroll (pixels)",
+    "tooltip": "Enter amount you want clipped from the leftmost portion of the webpage."
+  },
+  "scroll-vertical": {
+    "label": "Vertical Scroll (pixels)",
+    "tooltip": "Enter amount you want clipped from the topmost portion of the webpage."
+  },
+  "zoom": "Zoom",
+  "interactive": {
+    "label": "Interactive",
+    "tooltip": "Enable to allow users to interact with webpage."
+  },
+  "scrollbars": "Scroll Bars Enabled",
+  "refresh": {
+      "label": "Data Refresh Intervals (Minutes)",
+      "none": "Do Not Refresh"
+  },
+  "custom-validation": {
+    "scroll-horizontal": "Horizontal Scroll value entered exceeds size of placeholder",
+    "scroll-vertical": "Vertical Scroll value entered exceeds size of placeholder"
+  }
+}
