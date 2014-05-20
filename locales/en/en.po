@@ -1,0 +1,66 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: node-gettext\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgid "settings"
+msgstr "Web Page Settings"
+
+msgid "save"
+msgstr "Save"
+
+msgid "cancel"
+msgstr "Cancel"
+
+msgid "help"
+msgstr "Help"
+
+msgid "url"
+msgstr "URL*"
+
+msgid "scroll-horizontal##label"
+msgstr "Horizontal Scroll (pixels)"
+
+msgid "scroll-horizontal##tooltip"
+msgstr "Enter amount you want clipped from the leftmost portion of the webpage."
+
+msgid "scroll-vertical##label"
+msgstr "Vertical Scroll (pixels)"
+
+msgid "scroll-vertical##tooltip"
+msgstr "Enter amount you want clipped from the topmost portion of the webpage."
+
+msgid "zoom"
+msgstr "Zoom"
+
+msgid "interactive##label"
+msgstr "Interactive"
+
+msgid "interactive##tooltip"
+msgstr "Enable to allow users to interact with webpage."
+
+msgid "scrollbars"
+msgstr "Scroll Bars Enabled"
+
+msgid "refresh##label"
+msgstr "Data Refresh Intervals (Minutes)"
+
+msgid "refresh##none"
+msgstr "Do Not Refresh"
+
+msgid "validation##required"
+msgstr "__fieldName__ is a required field."
+
+msgid "validation##numeric"
+msgstr "__fieldName__ must contain only numbers."
+
+msgctxt "_url"
+msgid "validation##valid_url"
+msgstr "__fieldName__ must contain a valid URL."
+
+msgctxt "_size"
+msgid "validation##scroll_size"
+msgstr "__fieldName__ value entered exceeds size of placeholder"
