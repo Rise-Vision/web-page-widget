@@ -21,8 +21,22 @@ At this time Chrome is the only browser that this project and Rise Vision suppor
 
 ## Development
 
+### Dependencies
+* [Git](http://git-scm.com/) - Git is a free and open source distributed version control system that is used to manage our source code on Github.
+
 ### Local Development Environment Setup and Installation
-The Widget can be installed by executing the following command: `git clone https://github.com/Rise-Vision/widget-web-page.git`
+To make changes to the Widget, you'll first need to install [Git](http://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+
+The Widget can now be installed by executing the following command in Terminal:
+```
+git clone https://github.com/Rise-Vision/widget-web-page.git
+```
+
+### Deployment
+Once you are satisifed with your changes, deploy them to your server. In the Rise Vision Platform, you can then add your custom Widget via the *Gadgets* tab. Give your Widget a name, select a *Type* of *Widget*, paste the link to the `web-page.html` file in the *URL* field, and the link to the `settings.html` file in the *Custom UI URL* field:
+
+![Add a Widget](https://cloud.githubusercontent.com/assets/1190420/5113377/2f2d9240-6ffd-11e4-98ad-a484c1fa7183.png)
+
 
 ## Submitting Issues
 If you encounter problems or find defects we really want to hear about them. If you could take the time to add them as issues to this Repository it would be most appreciated. When reporting issues please use the following format where applicable:
@@ -46,6 +60,7 @@ All contributions are greatly appreciated and welcome! If you would first like t
 
 ### Languages
 If you would like to translate the user interface for this product to another language please complete the following:
+
 - Download the English translation file from this repository.
 - Download and install POEdit. This is software that you can use to write translations into another language.
 - Open the translation file in the [POEdit](http://www.poedit.net/) program and set the language for which you are writing a translation.
