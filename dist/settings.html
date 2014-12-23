@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Web Page Settings</title>
+
+  <link rel="stylesheet" href="css/settings.min.css"/>
+
+  <style type="text/css">
+    body, html {
+      background: transparent;
+    }
+
+    .text-validation {
+      margin-top: -15px;
+    }
+
+  </style>
+
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+</head>
+<body ng-app="risevision.widget.web-page.settings" ng-controller="settingsController">
+  <div class="widget">
+    <div class="overlay"></div>
+    <div class="settings">
+      <div class="settings-center">
+        <div class="wrapper container modal-content" ng-controller="webPageSettingsController" ng-cloak>
+          <div class="modal-header">
+            <h2 id="settings-title"> {{"web-page.settings" | translate }}
+              <button id="settings-close" type="button" class="close" ng-click="closeSettings()">
+                <i class="fa fa-times"></i>
+              </button>
+            </h2>
+            <div class="sticky-wrapper">
+              <widget-button-toolbar
+                save="saveSettings()" cancel="closeSettings()" disable-save="settingsForm.$invalid"
+                help="http://help.risevision.com/#/user/content/webpage-widget"
+                contribute="https://github.com/Rise-Vision/widget-web-page"></widget-button-toolbar>
+            </div>
+          </div>
+          <form role="form" name="settingsForm">
+            <!-- URL -->
+            <url-field id="urlField" url="settings.additionalParams.url" hide-storage="hide"
+                       ng-model="urlentry" valid></url-field>
+            <p class="text-danger text-validation" ng-show="initialView">
+              {{"widgets.errors.required" | translate}}
+            </p>
+            <!-- Horizontal Scroll -->
+            <div class="form-group">
+              <label for="scroll-horizontal">
+                {{"web-page.scroll.horizontal.label" | translate}}
+              </label>
+              <span popover="{{'web-page.scroll.horizontal.tooltip' | translate}}"
+                    popover-trigger="click" popover-placement="right" rv-tooltip></span>
+              <div class="row">
+                <div class="col-md-3">
+                    <div class="input-group">
+                      <input id="scroll-horizontal" name="scrollHorizontal" type="number"
+                             ng-model="settings.additionalParams.scrollHorizontal"
+                             class="form-control" required />
+                      <span class="input-group-addon">{{"common.units.pixels" | translate}}</span>
+                    </div>
+                  </div>
+              </div>
+              <p class="text-danger" ng-show="settingsForm.scrollHorizontal.$invalid">
+                {{"widgets.errors.numeric" | translate}}
+              </p>
+            </div>
+            <!-- Vertical Scroll -->
+            <div class="form-group">
+              <label for="scroll-vertical">
+                {{"web-page.scroll.vertical.label" | translate}}
+              </label>
+              <span popover="{{'web-page.scroll.vertical.tooltip' | translate}}"
+                    popover-trigger="click" popover-placement="right" rv-tooltip></span>
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="input-group">
+                    <input id="scroll-vertical" name="scrollVertical" type="number"
+                           ng-model="settings.additionalParams.scrollVertical"
+                           class="form-control" required />
+                    <span class="input-group-addon">{{"common.units.pixels" | translate}}</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-danger" ng-show="settingsForm.scrollVertical.$invalid">
+                {{"widgets.errors.numeric" | translate}}
+              </p>
+            </div>
+            <!--- Zoom -->
+            <div class="form-group">
+              <label for="zoom">{{"web-page.zoom.label" | translate}}</label>
+              <div class="row">
+                <div class="col-xs-6 col-md-3">
+                  <select id="zoom" name="zoom" ng-model="settings.additionalParams.zoom" class="form-control">
+                    <option value="0.50">50%</option>
+                    <option value="0.75">75%</option>
+                    <option value="0.90">90%</option>
+                    <option value="1" selected="selected">100%</option>
+                    <option value="1.25">125%</option>
+                    <option value="1.50">150%</option>
+                    <option value="2">200%</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <!-- Interactive -->
+              <div class="checkbox">
+                <label>
+                  <input name="interactive" type="checkbox"
+                         ng-model="settings.additionalParams.interactive"> {{"web-page.interactive.label" | translate}}
+                </label>
+              <span popover="{{'web-page.interactive.tooltip' | translate}}"
+                    popover-trigger="click" popover-placement="right" rv-tooltip></span>
+              </div>
+              <!-- Scrollbars -->
+              <div class="checkbox" ng-show="settings.additionalParams.interactive">
+                <label ng-class="{'label-disabled':settings.additionalParams.zoom > 1}">
+                  <input name="scrollbars" type="checkbox" ng-disabled="settings.additionalParams.zoom > 1"
+                         ng-model="settings.additionalParams.scrollbars"> {{"web-page.scrollbars" | translate}}
+                </label>
+              </div>
+            </div>
+            <!-- Data Refresh -->
+            <div class="form-group">
+              <label for="refresh">{{"web-page.refresh.label" | translate}}</label>
+              <div class="row">
+                <div class="col-xs-6 col-md-3">
+                  <select id="refresh" name="refresh" ng-model="settings.additionalParams.refresh" class="form-control">
+                    <option value="0" selected="selected">{{"web-page.refresh.none" | translate}}</option>
+                    <option value="60000">1</option>
+                    <option value="300000">5</option>
+                    <option value="1800000">30</option>
+                    <option value="3600000">60</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- Background Setting -->
+            <background-setting id="background" background="settings.additionalParams.background"></background-setting>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+  <script src="js/settings.min.js"></script>
+
+  <!-- build:e2egadgets -->
+  <script src="//rvashow2.appspot.com/gadgets/gadgets.min.js"></script>
+  
+
+  <script src="//s3.amazonaws.com/rise-common/scripts/i18next/i18next.min.js"></script>
+
+</body>
+</html>
