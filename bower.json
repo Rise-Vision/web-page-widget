@@ -1,0 +1,45 @@
+{
+  "name": "widget-web-page",
+  "version": "0.1.0",
+  "homepage": "https://github.com/Rise-Vision/widget-web-page",
+  "authors": [
+    "Rise Vision"
+  ],
+  "description": "Rise Vision Web Page Widget",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "risevision",
+    "ui",
+    "widget",
+    "web page"
+  ],
+  "license": "GPLv3",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "src/components",
+    "test",
+    "reports"
+  ],
+  "devDependencies": {
+    "angular-mocks": "1.2.18",
+    "q": "1.0.1",
+    "sinon": "~1.10.2"
+  },
+  "dependencies": {
+    "angular": "1.2.18",
+    "angular-route": "1.2.18",
+    "widget-common": "https://github.com/Rise-Vision/widget-common.git",
+    "widget-settings-ui-components": "https://github.com/Rise-Vision/widget-settings-ui-components.git",
+    "widget-settings-ui-core": "https://github.com/Rise-Vision/widget-settings-ui-core.git"
+  },
+  "resolutions": {
+    "angular-translate": "~2.4.2",
+    "angular-translate-loader-static-files": "~2.4.2",
+    "common-style": "~1.1.4",
+    "jquery": "1.11.0"
+  }
+}
