@@ -28607,9 +28607,43 @@ angular.module("risevision.widget.common")
 });
 
 angular.module("risevision.widget.common")
-  .factory("commonSettings", ["$log", function ($log) {
-    $log.debug("Initializing new RiseVision common settings instance...");
-    //return new RiseVision.Common.Settings();
+  .constant("STORAGE_URL_BASE", "storage.googleapis.com/risemedialibrary-")
+  .factory("commonSettings", ["$log", "STORAGE_URL_BASE", function ($log, STORAGE_URL_BASE) {
+
+    var factory = {
+      getStorageUrlData: function (url) {
+        var storage = {},
+          str, arr, params, pair;
+
+        if (url.indexOf(STORAGE_URL_BASE) !== -1) {
+          str = url.split(STORAGE_URL_BASE)[1];
+          str = decodeURIComponent(str.slice(str.indexOf("/") + 1));
+          arr = str.split("/");
+
+          storage.folder = (typeof arr[arr.length - 2] !== "undefined" && arr[arr.length - 2] !== null) ?
+            arr[arr.length - 2] : "";
+          storage.fileName = arr[arr.length - 1];
+        }
+        // Check if a folder was selected.
+        else {
+          params = url.split("?");
+
+          for (var i = 0; i < params.length; i++) {
+            pair = params[i].split("=");
+
+            if (pair[0] === "prefix") {
+              storage.folder = decodeURIComponent(pair[1]);
+              storage.fileName = "";
+              break;
+            }
+          }
+        }
+
+        return storage;
+      }
+    };
+
+    return factory;
   }]);
 
 angular.module("risevision.widget.common")
@@ -28621,13 +28655,41 @@ angular.module("risevision.widget.common")
   .service("i18nLoader", ["$window", "$q", function ($window, $q) {
     var deferred = $q.defer();
 
-    $window.i18n.init({ fallbackLng: "en" }, function () {
+    $window.i18n.init({ 
+      fallbackLng: "en",
+      resGetPath: "locales/__ns_____lng__.json"
+    }, function () {
       deferred.resolve($window.i18n);
     });
 
     this.get = function () {
       return deferred.promise;
     };
+  }]);
+
+angular.module("risevision.widget.common")
+  .factory("imageValidator", ["$q", function ($q) {
+    var factory = {
+      // Verify that URL is a valid image file.
+      isImage: function(src) {
+        var deferred = $q.defer(),
+          image = new Image();
+
+        image.onload = function() {
+          deferred.resolve(true);
+        };
+
+        image.onerror = function() {
+          deferred.resolve(false);
+        };
+
+        image.src = src;
+
+        return deferred.promise;
+      }
+    };
+
+    return factory;
   }]);
 
 angular.module("risevision.widget.common")
@@ -29021,21 +29083,21 @@ app.run(["$templateCache", function($templateCache) {
     }]);
 }());
 
-/* global CONFIG: true */
-/* exported CONFIG */
-if (typeof CONFIG === "undefined") {
-  var CONFIG = {
-    // variables go here
-  };
+if (typeof angular !== "undefined") {
+  angular.module("risevision.widget.common.storage-selector.config", [])
+    .value("STORAGE_MODAL", "http://storage.risevision.com/storage-modal.html#/files/");
 }
 
 (function () {
 
   "use strict";
 
-  angular.module("risevision.widget.common.storage-selector", ["ui.bootstrap"])
-  .directive("storageSelector", ["$window", "$templateCache", "$modal", "$sce", "$log",
-    function($window, $templateCache, $modal, $sce, $log){
+  angular.module("risevision.widget.common.storage-selector", [
+    "ui.bootstrap",
+    "risevision.widget.common.storage-selector.config"
+  ])
+  .directive("storageSelector", ["$window", "$templateCache", "$modal", "$sce", "$log", "STORAGE_MODAL",
+    function($window, $templateCache, $modal, $sce, $log, STORAGE_MODAL){
       return {
         restrict: "EA",
         scope : {
@@ -29073,11 +29135,11 @@ if (typeof CONFIG === "undefined") {
           };
 
           if (scope.local){
-            scope.storageUrl = "http://storage.risevision.com/storage-modal.html#/files/local";
+            scope.storageUrl = STORAGE_MODAL + "local";
           } else {
             scope.$watch("companyId", function (companyId) {
               if (companyId) {
-                scope.storageUrl = "http://storage.risevision.com/storage-modal.html#/files/" + companyId;
+                scope.storageUrl = STORAGE_MODAL + companyId;
               }
             });
           }
@@ -29126,11 +29188,11 @@ app.run(["$templateCache", function($templateCache) {
 (function () {
   "use strict";
 
-  angular.module("risevision.widget.common.url-field",
-    ["risevision.common.i18n",
+  angular.module("risevision.widget.common.url-field", [
+    "risevision.common.i18n",
     "risevision.widget.common.tooltip",
-    "risevision.widget.common.storage-selector"])
-
+    "risevision.widget.common.storage-selector"
+  ])
     .directive("urlField", ["$templateCache", "$log", function ($templateCache, $log) {
       return {
         restrict: "E",
@@ -29139,13 +29201,40 @@ app.run(["$templateCache", function($templateCache) {
           url: "=",
           hideLabel: "@",
           hideStorage: "@",
-          companyId: "@"
+          companyId: "@",
+          fileType: "@"
         },
         template: $templateCache.get("_angular/url-field/url-field.html"),
         link: function (scope, element, attrs, ctrl) {
 
+          function hasValidExtension(url, fileType) {
+            var testUrl = url.toLowerCase(),
+              extensions;
+
+            switch(fileType) {
+              case "image":
+                extensions = [".jpg", ".jpeg", ".png", ".bmp", ".svg", ".gif"];
+                break;
+              case "video":
+                extensions = [".webm"];
+                break;
+              default:
+                extensions = [];
+            }
+
+            for (var i = 0, len = extensions.length; i < len; i++) {
+              if (testUrl.indexOf(extensions[i]) !== -1) {
+                return true;
+              }
+            }
+
+            return false;
+          }
+
+
           function testUrl(value) {
-            var urlRegExp;
+            var urlRegExp,
+              isValid;
 
             /*
              Discussion
@@ -29165,7 +29254,18 @@ app.run(["$templateCache", function($templateCache) {
               value = "http://" + value;
             }
 
-            return urlRegExp.test(value);
+            isValid = urlRegExp.test(value);
+
+            if (isValid && typeof scope.fileType !== "undefined") {
+              isValid = hasValidExtension(value, scope.fileType);
+              if (!isValid) {
+                scope.invalidType = scope.fileType;
+              }
+            } else {
+              scope.invalidType = "url";
+            }
+
+            return isValid;
           }
 
           // By default enforce validation
@@ -29175,15 +29275,31 @@ app.run(["$templateCache", function($templateCache) {
           // Validation state
           scope.valid = true;
 
+          scope.invalidType = "url";
+
+          scope.allowInitEmpty = (typeof attrs.initEmpty !== "undefined") ? true : false;
+
           if (!scope.hideStorage) {
             scope.$on("picked", function (event, data) {
               scope.url = data[0];
             });
           }
 
+          scope.blur = function() {
+            scope.$emit("urlFieldBlur");
+          };
+
           scope.$watch("url", function (url) {
-            if (url && scope.doValidation) {
-              scope.valid = testUrl(scope.url);
+            if (typeof url !== "undefined" && url !== null) {
+
+              if (url !== "" && scope.allowInitEmpty) {
+                // ensure an empty "" value now gets validated
+                scope.allowInitEmpty = false;
+              }
+
+              if (scope.doValidation && !scope.allowInitEmpty) {
+                scope.valid = testUrl(scope.url);
+              }
             }
           });
 
@@ -29198,7 +29314,10 @@ app.run(["$templateCache", function($templateCache) {
             if(typeof scope.url !== "undefined") {
               if (doValidation) {
                 scope.forcedValid = false;
-                scope.valid = testUrl(scope.url);
+
+                if (!scope.allowInitEmpty) {
+                  scope.valid = testUrl(scope.url);
+                }
               } else {
                 scope.forcedValid = true;
                 scope.valid = true;
@@ -29218,12 +29337,14 @@ app.run(["$templateCache", function($templateCache) {
   "use strict";
   $templateCache.put("_angular/url-field/url-field.html",
     "<div class=\"form-group\" >\n" +
-    "  <label for=\"url\" ng-if=\"!hideLabel\">{{ \"url.label\" | translate }}</label>\n" +
+    "  <label ng-if=\"!hideLabel\">{{ \"url.label\" | translate }}</label>\n" +
     "  <div ng-class=\"{'input-group':!hideStorage}\">\n" +
-    "    <input id=\"url\" name=\"url\" type=\"text\" ng-model=\"url\" class=\"form-control\" placeholder=\"http://\">\n" +
+    "    <input name=\"url\" type=\"text\" ng-model=\"url\" ng-blur=\"blur()\" class=\"form-control\" placeholder=\"http://\">\n" +
     "    <span class=\"input-url-addon\" ng-if=\"!hideStorage\"><storage-selector company-id=\"{{companyId}}\"></storage-selector></span>\n" +
     "  </div>\n" +
-    "  <p ng-if=\"!valid\" class=\"help-block\">{{ \"url.invalid\" | translate }}</p>\n" +
+    "  <p ng-if=\"!valid && invalidType === 'url'\" class=\"text-danger\">{{ \"url.errors.url\" | translate }}</p>\n" +
+    "  <p ng-if=\"!valid && invalidType === 'image'\" class=\"text-danger\">{{ \"url.errors.image\" | translate }}</p>\n" +
+    "  <p ng-if=\"!valid && invalidType === 'video'\" class=\"text-danger\">{{ \"url.errors.video\" | translate }}</p>\n" +
     "  <div class=\"checkbox\" ng-show=\"forcedValid || !valid\">\n" +
     "    <label>\n" +
     "      <input name=\"validate-url\" ng-click=\"doValidation = !doValidation\" type=\"checkbox\"\n" +
