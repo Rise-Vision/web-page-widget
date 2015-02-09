@@ -50,6 +50,9 @@ RiseVision.WebPage = (function (document, gadgets) {
         "-o-transform-origin: 0 0;" +
         "-webkit-transform: scale(" + zoom + ");" +
         "-webkit-transform-origin: 0 0;";
+		
+	  zoomStyle += "width: " + ((1 / zoom) * 100) + "%;" +
+		"height: " + ((1 / zoom) * 100) + "%;";
 
       // Apply the zoom (scale) on the iframe
       frame.setAttribute("style", zoomStyle);
