@@ -23,13 +23,30 @@
     RiseVision.WebPage.stop();
   }
 
+  function additionalParams(names, values) {
+    if (Array.isArray(names) && names.length > 0 && names[0] === "additionalParams") {
+      if (Array.isArray(values) && values.length > 0) {
+        RiseVision.WebPage.setAdditionalParams(JSON.parse(values[0]));
+      }
+    }
+  }
+
+  function companyId(name, value) {
+    if (name && name === "companyId") {
+      RiseVision.WebPage.setCompanyId(value);
+    }
+
+    gadgets.rpc.register("rsparam_set_" + id, additionalParams);
+    gadgets.rpc.call("", "rsparam_get", null, id, ["additionalParams"]);
+  }
+
   if (id && id !== "") {
     gadgets.rpc.register("rscmd_play_" + id, play);
     gadgets.rpc.register("rscmd_pause_" + id, pause);
     gadgets.rpc.register("rscmd_stop_" + id, stop);
+    gadgets.rpc.register("rsparam_set_" + id, companyId);
 
-    gadgets.rpc.register("rsparam_set_" + id, RiseVision.WebPage.setParams);
-    gadgets.rpc.call("", "rsparam_get", null, id, ["additionalParams"]);
+    gadgets.rpc.call("", "rsparam_get", null, id, "companyId");
   }
 
 })(window, gadgets);

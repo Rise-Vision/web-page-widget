@@ -32,14 +32,16 @@
   "dependencies": {
     "angular": "1.2.18",
     "angular-route": "1.2.18",
+    "common-style": "https://github.com/Rise-Vision/common-style.git",
+    "web-component-rise-storage": "https://github.com/Rise-Vision/web-component-rise-storage.git#0.1.5",
     "widget-common": "https://github.com/Rise-Vision/widget-common.git",
-    "widget-settings-ui-components": "https://github.com/Rise-Vision/widget-settings-ui-components.git",
-    "widget-settings-ui-core": "https://github.com/Rise-Vision/widget-settings-ui-core.git"
+    "widget-settings-ui-components": "https://github.com/Rise-Vision/widget-settings-ui-components.git#0.1.8",
+    "widget-settings-ui-core": "https://github.com/Rise-Vision/widget-settings-ui-core.git#0.1.8"
   },
   "resolutions": {
     "angular-translate": "~2.4.2",
     "angular-translate-loader-static-files": "~2.4.2",
-    "common-style": "~1.1.4",
+    "common-style": "~1.1.10",
     "jquery": "1.11.0"
   }
 }

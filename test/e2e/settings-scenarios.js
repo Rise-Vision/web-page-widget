@@ -14,6 +14,11 @@
   browser.driver.manage().window().setSize(1024, 768);
 
   describe("Web Page Settings - e2e Testing", function() {
+    var validUrl = "http://www.valid-url.com",
+      invalidUrl = "http://w",
+      validImageUrl = validUrl + "/image.jpg",
+      invalidImageUrl = validUrl + "/image.pdf";
+
     beforeEach(function () {
       browser.get("/src/settings-e2e.html");
     });
@@ -26,8 +31,9 @@
       // URL Field
       expect(element(by.css("#urlField input[name='url']")).isPresent()).to.eventually.be.true;
 
-      // Background Setting
-      expect(element(by.css("#background .section")).isPresent()).to.eventually.be.true;
+      // Background Image Setting
+      expect(element(by.css("#background input[colorpicker]")).isPresent()).to.eventually.be.true;
+      expect(element(by.css("#background .color-wheel")).isPresent()).to.eventually.be.true;
     });
 
     it("Should correctly load default settings", function () {
@@ -52,13 +58,23 @@
     });
 
     it("Should enable Save button due to valid URL entry", function () {
-      element(by.css("#urlField input[name='url']")).sendKeys("http://www.valid-url.com");
+      element(by.css("#urlField input[name='url']")).sendKeys(validUrl);
 
       // save button should be enabled
       expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.false;
 
       // form should be valid due to URL Field empty entry
       expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.false;
+    });
+
+    it("Should be invalid form and Save button disabled due to invalid URL", function () {
+      element(by.css("#urlField input[name='url']")).sendKeys(invalidUrl);
+
+      // save button should be disabled
+      expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.true;
+
+      // form should be invalid due to invalid URL
+      expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.true;
     });
 
     it("Should be invalid form due to non-numeric entry of Scroll Horizontal", function () {
@@ -112,25 +128,59 @@
       expect(element(by.model("settings.additionalParams.scrollbars")).isSelected()).to.eventually.be.false;
     });
 
+    it("Should be invalid form and Save button disabled due to invalid background image URL", function () {
+      element(by.css("#urlField input[name='url']")).sendKeys(validUrl);
+
+      element(by.css("#background input[name='choice']")).click();
+
+      element(by.css("#background input[name='url']")).sendKeys(invalidImageUrl);
+
+      // save button should be disabled
+      expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.true;
+
+      // form should be invalid due to incorrect file format
+      expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.true;
+    });
+
+    it("Should be valid form and Save button enabled due to valid background image URL", function () {
+      element(by.css("#urlField input[name='url']")).sendKeys(validUrl);
+
+      element(by.css("#background input[name='choice']")).click();
+
+      element(by.css("#background input[name='url']")).sendKeys(validImageUrl);
+
+      // save button should be enabled
+      expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.false;
+
+      // form should be valid due to valid URL and valid format
+      expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.false;
+    });
+
     it("Should correctly save settings", function (done) {
-      var testUrl = "http://www.risevision.com";
       var settings = {
         params: {},
         additionalParams: {
-          url: testUrl,
+          url: validUrl,
           scrollHorizontal: 0,
           scrollVertical: 0,
           zoom: 1,
           interactive: false,
           scrollbars: false,
           refresh: 0,
-          background: {
-            color: "transparent"
-          }
+          "background": {
+            "color": "rgba(255,255,255,0)",
+            "useImage": false,
+            "image": {
+              "url": "",
+              "position": "top-left",
+              "scale": true
+            }
+          },
+          "backgroundStorage": {}
         }
       };
 
-      element(by.css("#urlField input[name='url']")).sendKeys(testUrl);
+      element(by.css("#urlField input[name='url']")).sendKeys(validUrl);
 
       element(by.css("input[name='interactive']")).click();
 
