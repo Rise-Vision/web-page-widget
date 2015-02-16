@@ -83,7 +83,7 @@ RiseVision.WebPage = (function (document, gadgets) {
         container.style.visibility = "visible";
 
         // Run setInterval to reload page based on the data refresh value
-        if (_additionalParams.refresh > 0) {
+        if (_additionalParams.refresh > 0 && _intervalId === null) {
           _intervalId = setInterval(function () {
             _loadFrame();
           }, _additionalParams.refresh);
