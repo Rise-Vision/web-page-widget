@@ -11,7 +11,13 @@ RiseVision.WebPage = (function (document, gadgets) {
   var _prefs = null,
     _additionalParams = {},
     _url = "",
-    _intervalId = null;
+    _intervalId = null,
+    _companyId = null,
+    _background = null;
+
+  /*
+   *  Private Methods
+   */
 
   function _configurePage() {
     var container = document.getElementById("webpage-container"),
@@ -50,6 +56,9 @@ RiseVision.WebPage = (function (document, gadgets) {
         "-o-transform-origin: 0 0;" +
         "-webkit-transform: scale(" + zoom + ");" +
         "-webkit-transform-origin: 0 0;";
+
+      zoomStyle += "width: " + ((1 / zoom) * 100) + "%;" +
+      "height: " + ((1 / zoom) * 100) + "%;";
 
       // Apply the zoom (scale) on the iframe
       frame.setAttribute("style", zoomStyle);
@@ -112,6 +121,23 @@ RiseVision.WebPage = (function (document, gadgets) {
       true, true, true, true, false);
   }
 
+  function _backgroundReady() {
+    // Configure the value for _url
+    _url = _additionalParams.url;
+
+    // Add http:// if no protocol parameter exists
+    if (_url.indexOf("://") === -1) {
+      _url = "http://" + _url;
+    }
+
+    _configurePage();
+    _ready();
+  }
+
+  /*
+   *  Public Methods
+   */
+
   function pause() {
     _unloadFrame();
   }
@@ -124,32 +150,22 @@ RiseVision.WebPage = (function (document, gadgets) {
     _unloadFrame();
   }
 
-  function setParams(names, values) {
+  function setCompanyId(value) {
+    _companyId = value;
+  }
+
+  function setAdditionalParams(params) {
     _prefs = new gadgets.Prefs();
+    _additionalParams = params;
 
-    if (Array.isArray(names) && names.length > 0 && names[0] === "additionalParams") {
-      if (Array.isArray(values) && values.length > 0) {
-        _additionalParams = JSON.parse(values[0]);
-
-        // set the document background with value saved in settings
-        document.body.style.background = _additionalParams.background.color;
-
-        // Configure the value for _url
-        _url = _additionalParams.url;
-
-        // Add http:// if no protocol parameter exists
-        if (_url.indexOf("://") === -1) {
-          _url = "http://" + _url;
-        }
-
-        _configurePage();
-        _ready();
-      }
-    }
+    // create and initialize the Background instance
+    _background = new RiseVision.Common.Background(_additionalParams, _companyId);
+    _background.init(_backgroundReady);
   }
 
   return {
-    setParams: setParams,
+    setCompanyId: setCompanyId,
+    setAdditionalParams: setAdditionalParams,
     pause: pause,
     play: play,
     stop: stop

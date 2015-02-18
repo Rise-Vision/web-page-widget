@@ -11,10 +11,6 @@
       background: transparent;
     }
 
-    .text-validation {
-      margin-top: -15px;
-    }
-
   </style>
 
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
@@ -42,9 +38,6 @@
             <!-- URL -->
             <url-field id="urlField" url="settings.additionalParams.url" hide-storage="hide"
                        ng-model="urlentry" valid></url-field>
-            <p class="text-danger text-validation" ng-show="initialView">
-              {{"widgets.errors.required" | translate}}
-            </p>
             <!-- Horizontal Scroll -->
             <div class="form-group">
               <label for="scroll-horizontal">
@@ -137,8 +130,14 @@
                 </div>
               </div>
             </div>
-            <!-- Background Setting -->
-            <background-setting id="background" background="settings.additionalParams.background"></background-setting>
+            <!-- Background Image Setting -->
+            <div class="section">
+              <h5>{{"background.heading" | translate}}</h5>
+              <background-image-setting id="background" name="background"
+                                        background="settings.additionalParams.background"
+                                        company-id="{{settings.params.companyId}}"
+                                        ng-model="backgroundsetting" valid></background-image-setting>
+            </div>
           </form>
         </div>
       </div>

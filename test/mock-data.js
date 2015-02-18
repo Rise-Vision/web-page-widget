@@ -15,8 +15,15 @@
       scrollbars: true,
       refresh: 0,
       "background": {
-        "color": "transparent"
-      }
+        "color": "rgba(145,145,145,0)",
+        "useImage": true,
+        "image": {
+          "url": "http://s3.amazonaws.com/rise-common/images/logo-small.png",
+          "position": "middle-center",
+          "scale": true
+        }
+      },
+      "backgroundStorage": {}
     }
   };
 
