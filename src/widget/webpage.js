@@ -12,7 +12,6 @@ RiseVision.WebPage = (function (document, gadgets) {
     _additionalParams = {},
     _url = "",
     _intervalId = null,
-    _companyId = null,
     _background = null;
 
   /*
@@ -150,21 +149,16 @@ RiseVision.WebPage = (function (document, gadgets) {
     _unloadFrame();
   }
 
-  function setCompanyId(value) {
-    _companyId = value;
-  }
-
   function setAdditionalParams(params) {
     _prefs = new gadgets.Prefs();
     _additionalParams = params;
 
     // create and initialize the Background instance
-    _background = new RiseVision.Common.Background(_additionalParams, _companyId);
+    _background = new RiseVision.Common.Background(_additionalParams);
     _background.init(_backgroundReady);
   }
 
   return {
-    setCompanyId: setCompanyId,
     setAdditionalParams: setAdditionalParams,
     pause: pause,
     play: play,

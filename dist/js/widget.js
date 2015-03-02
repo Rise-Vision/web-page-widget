@@ -29,7 +29,6 @@ RiseVision.WebPage = (function (document, gadgets) {
     _additionalParams = {},
     _url = "",
     _intervalId = null,
-    _companyId = null,
     _background = null;
 
   /*
@@ -167,21 +166,16 @@ RiseVision.WebPage = (function (document, gadgets) {
     _unloadFrame();
   }
 
-  function setCompanyId(value) {
-    _companyId = value;
-  }
-
   function setAdditionalParams(params) {
     _prefs = new gadgets.Prefs();
     _additionalParams = params;
 
     // create and initialize the Background instance
-    _background = new RiseVision.Common.Background(_additionalParams, _companyId);
+    _background = new RiseVision.Common.Background(_additionalParams);
     _background.init(_backgroundReady);
   }
 
   return {
-    setCompanyId: setCompanyId,
     setAdditionalParams: setAdditionalParams,
     pause: pause,
     play: play,
@@ -193,11 +187,13 @@ RiseVision.WebPage = (function (document, gadgets) {
 var RiseVision = RiseVision || {};
 RiseVision.Common = RiseVision.Common || {};
 
-RiseVision.Common.Background = function (data, companyId) {
+RiseVision.Common.Background = function (data) {
   "use strict";
 
   var _callback = null,
-    _ready = false;
+    _ready = false,
+    _background = null,
+    _storage = null;
 
   /*
    * Private Methods
@@ -210,34 +206,42 @@ RiseVision.Common.Background = function (data, companyId) {
     }
   }
 
+  function _storageResponse(e) {
+    _storage.removeEventListener("rise-storage-response", _storageResponse);
+
+    if (Array.isArray(e.detail)) {
+      _background.style.backgroundImage = "url(" + e.detail[0] + ")";
+    } else {
+      _background.style.backgroundImage = "url(" + e.detail + ")";
+    }
+    _backgroundReady();
+  }
+
   function _configure() {
-    var background = document.getElementById("background"),
-      storage = document.getElementById("backgroundStorage");
+    _background = document.getElementById("background");
+    _storage = document.getElementById("backgroundStorage");
 
     // set the document background
     document.body.style.background = data.background.color;
 
-    if (background) {
+    if (_background) {
       if (data.background.useImage) {
-        background.className = data.background.image.position;
-        background.className = data.background.image.scale ? background.className + " scale-to-fit"
-          : background.className;
+        _background.className = data.background.image.position;
+        _background.className = data.background.image.scale ? _background.className + " scale-to-fit"
+          : _background.className;
 
         if (Object.keys(data.backgroundStorage).length === 0) {
-          background.style.backgroundImage = "url(" + data.background.image.url + ")";
+          _background.style.backgroundImage = "url(" + data.background.image.url + ")";
           _backgroundReady();
         } else {
-          if (storage) {
+          if (_storage) {
             // Rise Storage
-            storage.addEventListener("rise-storage-response", function(e) {
-              background.style.backgroundImage = "url(" + e.detail[0] + ")";
-              _backgroundReady();
-            });
+            _storage.addEventListener("rise-storage-response", _storageResponse);
 
-            storage.setAttribute("folder", data.backgroundStorage.folder);
-            storage.setAttribute("fileName", data.backgroundStorage.fileName);
-            storage.setAttribute("companyId", companyId);
-            storage.go();
+            _storage.setAttribute("folder", data.backgroundStorage.folder);
+            _storage.setAttribute("fileName", data.backgroundStorage.fileName);
+            _storage.setAttribute("companyId", data.backgroundStorage.companyId);
+            _storage.go();
           } else {
             console.log("Missing element with id value of 'backgroundStorage'");
           }
@@ -304,22 +308,13 @@ RiseVision.Common.Background = function (data, companyId) {
     }
   }
 
-  function companyId(name, value) {
-    if (name && name === "companyId") {
-      RiseVision.WebPage.setCompanyId(value);
-    }
-
-    gadgets.rpc.register("rsparam_set_" + id, additionalParams);
-    gadgets.rpc.call("", "rsparam_get", null, id, ["additionalParams"]);
-  }
-
   if (id && id !== "") {
     gadgets.rpc.register("rscmd_play_" + id, play);
     gadgets.rpc.register("rscmd_pause_" + id, pause);
     gadgets.rpc.register("rscmd_stop_" + id, stop);
-    gadgets.rpc.register("rsparam_set_" + id, companyId);
 
-    gadgets.rpc.call("", "rsparam_get", null, id, "companyId");
+    gadgets.rpc.register("rsparam_set_" + id, additionalParams);
+    gadgets.rpc.call("", "rsparam_get", null, id, ["additionalParams"]);
   }
 
 })(window, gadgets);
