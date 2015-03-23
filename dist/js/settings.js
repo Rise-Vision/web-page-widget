@@ -28320,7 +28320,7 @@ angular.module("risevision.widget.common.storage-selector")
     $scope.storageUrl = storageUrl;
 
     $window.addEventListener("message", function (event) {
-      var storageTest = "storage-stage.risevision.com",
+      var storageTest = "storage-stage-rva-test.risevision.com",
         storageProd = "storage.risevision.com";
 
       if (event.origin.indexOf(storageTest) === -1 && event.origin.indexOf(storageProd) === -1) {
@@ -28735,11 +28735,8 @@ if (typeof config === "undefined") {
 
   if (typeof angular !== "undefined") {
     angular.module("risevision.common.i18n.config", [])
-      .constant("LOCALES_PREFIX", "components/rv-common-i18n/dist/locales/translation_")
+      .constant("LOCALES_PREFIX", "locales/translation_")
       .constant("LOCALES_SUFIX", ".json");
-
-    angular.module("risevision.widget.common.storage-selector.config")
-      .value("STORAGE_MODAL", "https://storage-stage.risevision.com/rva-test/dist/storage-modal.html#/files/");
   }
 }
 

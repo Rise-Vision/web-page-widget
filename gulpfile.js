@@ -114,7 +114,8 @@
   gulp.task("html:e2e",
     factory.htmlE2E({
       files: ["./src/settings.html", "./src/widget.html"],
-      e2eMockData: "../test/mock-data.js"
+      e2eMockData: "../test/mock-data.js",
+      e2eStorageMock: "../node_modules/widget-tester/mocks/rise-storage-mock.js"
     }));
 
   // ** Settings ** //
