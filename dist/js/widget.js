@@ -7,11 +7,8 @@ if (typeof config === "undefined") {
 
   if (typeof angular !== "undefined") {
     angular.module("risevision.common.i18n.config", [])
-      .constant("LOCALES_PREFIX", "components/rv-common-i18n/dist/locales/translation_")
+      .constant("LOCALES_PREFIX", "locales/translation_")
       .constant("LOCALES_SUFIX", ".json");
-
-    angular.module("risevision.widget.common.storage-selector.config")
-      .value("STORAGE_MODAL", "https://storage-stage.risevision.com/rva-test/dist/storage-modal.html#/files/");
   }
 }
 
@@ -221,17 +218,6 @@ RiseVision.Common.Background = function (data) {
     }
   }
 
-  function _storageResponse(e) {
-    _storage.removeEventListener("rise-storage-response", _storageResponse);
-
-    if (Array.isArray(e.detail)) {
-      _background.style.backgroundImage = "url(" + e.detail[0] + ")";
-    } else {
-      _background.style.backgroundImage = "url(" + e.detail + ")";
-    }
-    _backgroundReady();
-  }
-
   function _configure() {
     var str;
 
@@ -260,7 +246,15 @@ RiseVision.Common.Background = function (data) {
         } else {
           if (_storage) {
             // Rise Storage
-            _storage.addEventListener("rise-storage-response", _storageResponse);
+            _storage.addEventListener("rise-storage-response", function (e) {
+              if (e.detail && e.detail.files && e.detail.files.length > 0) {
+                _background.style.backgroundImage = "url(" + e.detail.files[0].url + ")";
+              }
+
+              if (!_ready) {
+                _backgroundReady();
+              }
+            });
 
             _storage.setAttribute("folder", data.backgroundStorage.folder);
             _storage.setAttribute("fileName", data.backgroundStorage.fileName);
@@ -332,14 +326,16 @@ RiseVision.Common.Background = function (data) {
     }
   }
 
-  if (id && id !== "") {
-    gadgets.rpc.register("rscmd_play_" + id, play);
-    gadgets.rpc.register("rscmd_pause_" + id, pause);
-    gadgets.rpc.register("rscmd_stop_" + id, stop);
+  window.addEventListener("polymer-ready", function() {
+    if (id && id !== "") {
+      gadgets.rpc.register("rscmd_play_" + id, play);
+      gadgets.rpc.register("rscmd_pause_" + id, pause);
+      gadgets.rpc.register("rscmd_stop_" + id, stop);
 
-    gadgets.rpc.register("rsparam_set_" + id, additionalParams);
-    gadgets.rpc.call("", "rsparam_get", null, id, ["additionalParams"]);
-  }
+      gadgets.rpc.register("rsparam_set_" + id, additionalParams);
+      gadgets.rpc.call("", "rsparam_get", null, id, ["additionalParams"]);
+    }
+  });
 
 })(window, gadgets);
 
@@ -348,7 +344,7 @@ RiseVision.Common.Background = function (data) {
 /* jshint ignore:start */
 var _gaq = _gaq || [];
 
-_gaq.push(['_setAccount', 'UA-41395348-11']);
+_gaq.push(['_setAccount', 'UA-57092159-6']);
 _gaq.push(['_trackPageview']);
 
 (function() {
