@@ -74,8 +74,6 @@ casper.test.begin("Web Page Widget - e2e Testing", function (test) {
     test.comment("Testing within iframe");
 
     test.assertUrlMatch(/risevision\.com/, "Should be correct url of website loaded");
-    test.assertVisible('a[href="http://www.risevision.com/"]',
-      "Should contain Rise Vision logo to verify content is rendered");
   });
 
   casper.run(function() {
