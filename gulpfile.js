@@ -35,7 +35,7 @@
   });
 
   gulp.task("config", function() {
-    var env = process.env.NODE_ENV || "dev";
+    var env = process.env.NODE_ENV || "prod";
     gutil.log("Environment is", env);
 
     return gulp.src(["./src/config/" + env + ".js"])
@@ -96,7 +96,7 @@
     return gulp.src([
       "src/components/webcomponentsjs/webcomponents*.js",
       "src/components/web-component-rise-storage/rise-storage.html",
-      "src/components/polymer/**/*.*{html,js}",
+      "src/components/polymer/*.*{html,js}",
       "src/components/core-ajax/*.*{html,js}",
       "src/components/underscore/*.js"
     ], {base: "./src/"})
