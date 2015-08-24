@@ -1,4 +1,4 @@
-casper.test.begin("Web Page Widget - e2e Testing", function (test) {
+casper.test.begin("Web Page Widget - Integration Testing", function (test) {
   var system = require('system');
   var e2ePort = system.env.E2E_PORT || 8099;
 
@@ -10,7 +10,7 @@ casper.test.begin("Web Page Widget - e2e Testing", function (test) {
 
   casper.start("http://localhost:"+e2ePort+"/src/widget-e2e.html",
     function () {
-      test.assertTitle("Web Page Widget");
+      test.assertTitle("Web Page Widget", "Test page has loaded");
     }
   );
 
@@ -18,7 +18,7 @@ casper.test.begin("Web Page Widget - e2e Testing", function (test) {
     casper.evaluate(function () {
       var evt = document.createEvent("CustomEvent");
 
-      evt.initCustomEvent("polymer-ready", false, false);
+      evt.initCustomEvent("WebComponentsReady", false, false);
       window.dispatchEvent(evt);
     });
 
