@@ -183,7 +183,7 @@
   });
 
   gulp.task("test", function(cb) {
-    runSequence("build", "test:unit", "test:integration", "test:metrics", cb);
+    runSequence("test:unit", "test:integration", "test:metrics", cb);
   });
 
   gulp.task("build", function (cb) {

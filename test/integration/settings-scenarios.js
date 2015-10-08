@@ -126,7 +126,7 @@
       expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.false;
     });
 
-    it("Should correctly save settings", function (done) {
+    it("Should correctly save settings", function () {
       var settings = {
         params: {},
         additionalParams: {
