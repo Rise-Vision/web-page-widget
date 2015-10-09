@@ -39,6 +39,7 @@
     "gulp-watch": "^0.6.8",
     "jshint-stylish": "^0.2.0",
     "phantomjs": "^1.9.18",
+    "sinon": "^1.11.1",
     "widget-tester": "git://github.com/Rise-Vision/widget-tester.git#0.1.0"
   }
 }

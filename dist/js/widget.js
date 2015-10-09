@@ -93,9 +93,13 @@ RiseVision.WebPage = (function (document, gadgets) {
       container = document.getElementById("webpage-container"),
       hasParams = /[?#&]/.test(_url),
       randomNum = Math.ceil(Math.random() * 100),
+      refreshURL = _url;
+
+    if (_additionalParams.refresh > 0) {
       refreshURL = hasParams ?
-          _url + "&dummyVar=" + randomNum :
-          _url + "?dummyVar=" + randomNum;
+      _url + "&dummyVar=" + randomNum :
+      _url + "?dummyVar=" + randomNum;
+    }
 
     if (container && frame) {
       frame.onload = function () {

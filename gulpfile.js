@@ -105,7 +105,6 @@
   });
 
   gulp.task("webdriver_update", factory.webdriveUpdate());
-  gulp.task("test:metrics", factory.metrics());
 
   // ***** Integration Testing ***** //
   gulp.task("integration:server-close", factory.testServerClose());
@@ -115,7 +114,7 @@
   gulp.task("html:integration",
     factory.htmlE2E({
       files: ["./src/settings.html", "./src/widget.html"],
-      e2eMockData: "../test/mock-data.js",
+      e2eMockData: "../test/data/main.js",
       e2eStorageMock: "../node_modules/widget-tester/mocks/rise-storage-mock.js"
     }));
 
@@ -126,7 +125,7 @@
 
   // ** Widget ** //
   gulp.task("test:integration:widget", factory.testE2E({
-      testFiles: "test/integration/widget-scenarios.js"}
+      testFiles: "test/integration/widget-*.js"}
   ));
 
   gulp.task("test:integration", function(cb) {
@@ -154,14 +153,14 @@
       "src/config/test.js",
       "src/settings/settings-app.js",
       "src/settings/**/*.js",
-      "test/mock-data.js",
+      "test/data/main.js",
       "test/unit/settings/**/*spec.js"]}
   ));
 
   gulp.task("test:unit:widget", factory.testUnitAngular(
     {testFiles: [
       "src/components/jquery/dist/jquery.js",
-      "test/mock-data.js",
+      "test/data/main.js",
       "node_modules/widget-tester/mocks/gadget-mocks.js",
       "src/config/test.js",
       "src/widget/webpage.js",
@@ -183,7 +182,7 @@
   });
 
   gulp.task("test", function(cb) {
-    runSequence("test:unit", "test:integration", "test:metrics", cb);
+    runSequence("test:unit", "test:integration", cb);
   });
 
   gulp.task("build", function (cb) {
