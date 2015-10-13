@@ -13,7 +13,7 @@
 
   browser.driver.manage().window().setSize(1024, 768);
 
-  describe("Web Page Settings - e2e Testing", function() {
+  describe("Web Page Settings - Integration Testing", function() {
     var validUrl = "http://www.valid-url.com",
       invalidUrl = "http://w",
       validImageUrl = validUrl + "/image.jpg",
@@ -77,36 +77,6 @@
       expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.true;
     });
 
-    it("Should be invalid form due to non-numeric entry of Scroll Horizontal", function () {
-      element(by.css("#urlField input[name='url']")).sendKeys("http://www.valid-url.com");
-
-      // save button should be enabled
-      expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.false;
-
-      element(by.css("input[name='scrollHorizontal']")).sendKeys("abc");
-
-      // form should be invalid
-      expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.true;
-
-      // save button should be disabled
-      expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.true;
-    });
-
-    it("Should be invalid form due to non-numeric entry of Scroll Vertical", function () {
-      element(by.css("#urlField input[name='url']")).sendKeys("http://www.valid-url.com");
-
-      // save button should be enabled
-      expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.false;
-
-      element(by.css("input[name='scrollVertical']")).sendKeys("abc");
-
-      // form should be invalid
-      expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.true;
-
-      // save button should be disabled
-      expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.true;
-    });
-
     it("Should hide Scrollbars checkbox and ensure value of false when Interactive checkbox de-selected", function () {
       element(by.css("input[name='interactive']")).click();
 
@@ -156,7 +126,7 @@
       expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.false;
     });
 
-    it("Should correctly save settings", function (done) {
+    it("Should correctly save settings", function () {
       var settings = {
         params: {},
         additionalParams: {

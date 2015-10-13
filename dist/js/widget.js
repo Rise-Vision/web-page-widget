@@ -2,7 +2,7 @@
 /* exported config */
 if (typeof config === "undefined") {
   var config = {
-    // variables go here
+    STORAGE_ENV: "prod"
   };
 
   if (typeof angular !== "undefined") {
@@ -93,9 +93,13 @@ RiseVision.WebPage = (function (document, gadgets) {
       container = document.getElementById("webpage-container"),
       hasParams = /[?#&]/.test(_url),
       randomNum = Math.ceil(Math.random() * 100),
+      refreshURL = _url;
+
+    if (_additionalParams.refresh > 0) {
       refreshURL = hasParams ?
-          _url + "&dummyVar=" + randomNum :
-          _url + "?dummyVar=" + randomNum;
+      _url + "&dummyVar=" + randomNum :
+      _url + "?dummyVar=" + randomNum;
+    }
 
     if (container && frame) {
       frame.onload = function () {
@@ -181,6 +185,8 @@ RiseVision.WebPage = (function (document, gadgets) {
 
 })(document, gadgets);
 
+/* global config */
+
 var RiseVision = RiseVision || {};
 RiseVision.Common = RiseVision.Common || {};
 
@@ -247,18 +253,28 @@ RiseVision.Common.Background = function (data) {
           if (_storage) {
             // Rise Storage
             _storage.addEventListener("rise-storage-response", function (e) {
-              if (e.detail && e.detail.files && e.detail.files.length > 0) {
-                _background.style.backgroundImage = "url(" + e.detail.files[0].url + ")";
-              }
-
               if (!_ready) {
+                if (e.detail && e.detail.url) {
+                  // Escape single quotes.
+                  _background.style.backgroundImage = "url('" + e.detail.url.replace("'", "\\'") + "')";
+                }
+
                 _backgroundReady();
+              } else {
+                if (e.detail && e.detail.url) {
+                  // check for "changed" property and ensure it is true
+                  if (e.detail.hasOwnProperty("changed") && e.detail.changed) {
+                    // Escape single quotes.
+                    _background.style.backgroundImage = "url('" + e.detail.url.replace("'", "\\'") + "')";
+                  }
+                }
               }
             });
 
             _storage.setAttribute("folder", data.backgroundStorage.folder);
             _storage.setAttribute("fileName", data.backgroundStorage.fileName);
             _storage.setAttribute("companyId", data.backgroundStorage.companyId);
+            _storage.setAttribute("env", config.STORAGE_ENV);
             _storage.go();
           } else {
             console.log("Missing element with id value of 'backgroundStorage'");
@@ -326,7 +342,9 @@ RiseVision.Common.Background = function (data) {
     }
   }
 
-  window.addEventListener("polymer-ready", function() {
+  function polymerReady() {
+    window.removeEventListener("WebComponentsReady", polymerReady);
+
     if (id && id !== "") {
       gadgets.rpc.register("rscmd_play_" + id, play);
       gadgets.rpc.register("rscmd_pause_" + id, pause);
@@ -335,7 +353,9 @@ RiseVision.Common.Background = function (data) {
       gadgets.rpc.register("rsparam_set_" + id, additionalParams);
       gadgets.rpc.call("", "rsparam_get", null, id, ["additionalParams"]);
     }
-  });
+  }
+
+  window.addEventListener("WebComponentsReady", polymerReady);
 
 })(window, gadgets);
 

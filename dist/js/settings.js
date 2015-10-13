@@ -27685,10 +27685,9 @@ var BFHTimezonesList = {
 
 }(window.jQuery);
 
-'use strict';
-
 angular.module('colorpicker.module', [])
     .factory('Helper', function () {
+      'use strict';
       return {
         closestSlider: function (elem) {
           var matchesSelector = elem.matches || elem.webkitMatchesSelector || elem.mozMatchesSelector || elem.msMatchesSelector;
@@ -27770,6 +27769,7 @@ angular.module('colorpicker.module', [])
       };
     })
     .factory('Color', ['Helper', function (Helper) {
+      'use strict';
       return {
         value: {
           h: 1,
@@ -27875,6 +27875,7 @@ angular.module('colorpicker.module', [])
       };
     }])
     .factory('Slider', ['Helper', function (Helper) {
+      'use strict';
       var
           slider = {
             maxLeft: 0,
@@ -27901,14 +27902,18 @@ angular.module('colorpicker.module', [])
         setSlider: function (event, fixedPosition) {
           var
             target = Helper.closestSlider(event.target),
-            targetOffset = Helper.getOffset(target, fixedPosition);
+            targetOffset = Helper.getOffset(target, fixedPosition),
+            rect = target.getBoundingClientRect(),
+            offsetX = event.clientX - rect.left,
+            offsetY = event.clientY - rect.top;
+
           slider.knob = target.children[0].style;
           slider.left = event.pageX - targetOffset.left - window.pageXOffset + targetOffset.scrollX;
           slider.top = event.pageY - targetOffset.top - window.pageYOffset + targetOffset.scrollY;
 
           pointer = {
-            left: event.pageX,
-            top: event.pageY
+            left: event.pageX - (offsetX - slider.left),
+            top: event.pageY - (offsetY - slider.top)
           };
         },
         setSaturation: function(event, fixedPosition) {
@@ -27945,6 +27950,7 @@ angular.module('colorpicker.module', [])
       };
     }])
     .directive('colorpicker', ['$document', '$compile', 'Color', 'Slider', 'Helper', function ($document, $compile, Color, Slider, Helper) {
+      'use strict';
       return {
         require: '?ngModel',
         restrict: 'A',
@@ -28027,6 +28033,9 @@ angular.module('colorpicker.module', [])
                 .on('mousedown', function(event) {
                   Slider.setAlpha(event, fixedPosition);
                   bindMouseEvents();
+                })
+                .on('mouseup', function(event){
+                  emitEvent('colorpicker-selected-alpha');
                 });
           }
 
@@ -28038,16 +28047,25 @@ angular.module('colorpicker.module', [])
               .on('mousedown', function(event) {
                 Slider.setHue(event, fixedPosition);
                 bindMouseEvents();
+              })
+              .on('mouseup', function(event){
+                emitEvent('colorpicker-selected-hue');
               });
 
           sliderSaturation
               .on('click', function(event) {
                 Slider.setSaturation(event, fixedPosition);
                 mousemove(event);
+                if (angular.isDefined(attrs.colorpickerCloseOnSelect)) {
+                  hideColorpickerTemplate();
+                }
               })
               .on('mousedown', function(event) {
                 Slider.setSaturation(event, fixedPosition);
                 bindMouseEvents();
+              })
+              .on('mouseup', function(event){
+                emitEvent('colorpicker-selected-saturation');
               });
 
           if (fixedPosition) {
@@ -28055,9 +28073,9 @@ angular.module('colorpicker.module', [])
           }
 
           colorpickerTemplate.addClass('colorpicker-position-' + position);
-		      if (inline === 'true') {
-			      colorpickerTemplate.addClass('colorpicker-inline');
-		      }
+          if (inline === 'true') {
+            colorpickerTemplate.addClass('colorpicker-inline');
+          }
 
           target.append(colorpickerTemplate);
 
@@ -28117,6 +28135,7 @@ angular.module('colorpicker.module', [])
           };
 
           var mouseup = function () {
+            emitEvent('colorpicker-selected');
             $document.off('mousemove', mousemove);
             $document.off('mouseup', mouseup);
           };
@@ -28173,21 +28192,34 @@ angular.module('colorpicker.module', [])
             hideColorpickerTemplate();
           };
 
-          if(inline === false) {
-            elem.on('click', function () {
+          var showColorpickerTemplate = function() {
+
+            if (!colorpickerTemplate.hasClass('colorpicker-visible')) {
               update();
               colorpickerTemplate
                 .addClass('colorpicker-visible')
                 .css(getColorpickerTemplatePosition());
+              emitEvent('colorpicker-shown');
 
-              // register global mousedown event to hide the colorpicker
-              $document.on('mousedown', documentMousedownHandler);
-            });
+              if (inline === false) {
+                // register global mousedown event to hide the colorpicker
+                $document.on('mousedown', documentMousedownHandler);
+              }
+
+              if (attrs.colorpickerIsOpen) {
+                $scope[attrs.colorpickerIsOpen] = true;
+                if (!$scope.$$phase) {
+                  $scope.$digest(); //trigger the watcher to fire
+                }
+              }
+            }
+
+          };
+
+          if(inline === false) {
+            elem.on('click', showColorpickerTemplate);
           } else {
-            update();
-            colorpickerTemplate
-              .addClass('colorpicker-visible')
-              .css(getColorpickerTemplatePosition());
+            showColorpickerTemplate();
           }
 
           colorpickerTemplate.on('mousedown', function (event) {
@@ -28210,12 +28242,32 @@ angular.module('colorpicker.module', [])
               emitEvent('colorpicker-closed');
               // unregister the global mousedown event
               $document.off('mousedown', documentMousedownHandler);
+
+              if (attrs.colorpickerIsOpen) {
+                $scope[attrs.colorpickerIsOpen] = false;
+                if (!$scope.$$phase) {
+                  $scope.$digest(); //trigger the watcher to fire
+                }
+              }
             }
           };
 
           colorpickerTemplate.find('button').on('click', function () {
             hideColorpickerTemplate();
           });
+
+          if (attrs.colorpickerIsOpen) {
+            $scope.$watch(attrs.colorpickerIsOpen, function(shouldBeOpen) {
+
+              if (shouldBeOpen === true) {
+                showColorpickerTemplate();
+              } else if (shouldBeOpen === false) {
+                hideColorpickerTemplate();
+              }
+
+            });
+          }
+
         }
       };
     }]);
@@ -28253,9 +28305,9 @@ angular.module('colorpicker.module', [])
 }());
 
 (function(module) {
-try { app = angular.module("risevision.widget.common.widget-button-toolbar"); }
-catch(err) { app = angular.module("risevision.widget.common.widget-button-toolbar", []); }
-app.run(["$templateCache", function($templateCache) {
+try { module = angular.module("risevision.widget.common.widget-button-toolbar"); }
+catch(err) { module = angular.module("risevision.widget.common.widget-button-toolbar", []); }
+module.run(["$templateCache", function($templateCache) {
   "use strict";
   $templateCache.put("_angular/widget-button-toolbar/widget-button-toolbar.html",
     "<div class=\"btn-toolbar sticky-buttons\">\n" +
@@ -28571,9 +28623,9 @@ app.run(["$templateCache", function($templateCache) {
 }());
 
 (function(module) {
-try { app = angular.module("risevision.widget.common.url-field"); }
-catch(err) { app = angular.module("risevision.widget.common.url-field", []); }
-app.run(["$templateCache", function($templateCache) {
+try { module = angular.module("risevision.widget.common.url-field"); }
+catch(err) { module = angular.module("risevision.widget.common.url-field", []); }
+module.run(["$templateCache", function($templateCache) {
   "use strict";
   $templateCache.put("_angular/url-field/url-field.html",
     "<div class=\"form-group\" >\n" +
@@ -28588,10 +28640,8 @@ app.run(["$templateCache", function($templateCache) {
     "  <div class=\"checkbox\" ng-show=\"forcedValid || !valid\">\n" +
     "    <label>\n" +
     "      <input name=\"validate-url\" ng-click=\"doValidation = !doValidation\" type=\"checkbox\"\n" +
-    "             value=\"validate-url\" checked=\"checked\"> {{\"url.validate.label\" | translate}}\n" +
+    "             value=\"validate-url\"> {{\"url.validate.label\" | translate}}\n" +
     "    </label>\n" +
-    "    <span popover=\"{{'url.validate.tooltip' | translate}}\" popover-trigger=\"click\"\n" +
-    "          popover-placement=\"top\" rv-tooltip></span>\n" +
     "  </div>\n" +
     "</div>\n" +
     "");
@@ -28623,9 +28673,9 @@ app.run(["$templateCache", function($templateCache) {
 }());
 
 (function(module) {
-try { app = angular.module("risevision.widget.common.position-setting"); }
-catch(err) { app = angular.module("risevision.widget.common.position-setting", []); }
-app.run(["$templateCache", function($templateCache) {
+try { module = angular.module("risevision.widget.common.position-setting"); }
+catch(err) { module = angular.module("risevision.widget.common.position-setting", []); }
+module.run(["$templateCache", function($templateCache) {
   "use strict";
   $templateCache.put("_angular/position-setting/position-setting.html",
     "<div class=\"row\">\n" +
@@ -28746,9 +28796,9 @@ app.run(["$templateCache", function($templateCache) {
 }());
 
 (function(module) {
-try { app = angular.module("risevision.widget.common.background-image-setting"); }
-catch(err) { app = angular.module("risevision.widget.common.background-image-setting", []); }
-app.run(["$templateCache", function($templateCache) {
+try { module = angular.module("risevision.widget.common.background-image-setting"); }
+catch(err) { module = angular.module("risevision.widget.common.background-image-setting", []); }
+module.run(["$templateCache", function($templateCache) {
   "use strict";
   $templateCache.put("_angular/background-image-setting/background-image-setting.html",
     "<!-- Color -->\n" +
@@ -28803,7 +28853,7 @@ app.run(["$templateCache", function($templateCache) {
 /* exported config */
 if (typeof config === "undefined") {
   var config = {
-    // variables go here
+    STORAGE_ENV: "prod"
   };
 
   if (typeof angular !== "undefined") {

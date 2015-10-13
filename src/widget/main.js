@@ -31,7 +31,9 @@
     }
   }
 
-  window.addEventListener("polymer-ready", function() {
+  function polymerReady() {
+    window.removeEventListener("WebComponentsReady", polymerReady);
+
     if (id && id !== "") {
       gadgets.rpc.register("rscmd_play_" + id, play);
       gadgets.rpc.register("rscmd_pause_" + id, pause);
@@ -40,7 +42,9 @@
       gadgets.rpc.register("rsparam_set_" + id, additionalParams);
       gadgets.rpc.call("", "rsparam_get", null, id, ["additionalParams"]);
     }
-  });
+  }
+
+  window.addEventListener("WebComponentsReady", polymerReady);
 
 })(window, gadgets);
 
