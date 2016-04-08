@@ -140,6 +140,13 @@ RiseVision.WebPage = (function (document, gadgets) {
   /*
    *  Public Methods
    */
+  function getTableName() {
+    return "webpage_events";
+  }
+
+  function logEvent(params) {
+    RiseVision.Common.LoggerUtils.logEvent(getTableName(), params);
+  }
 
   function pause() {
     _unloadFrame();
@@ -163,10 +170,12 @@ RiseVision.WebPage = (function (document, gadgets) {
   }
 
   return {
-    setAdditionalParams: setAdditionalParams,
-    pause: pause,
-    play: play,
-    stop: stop
+    "getTableName": getTableName,
+    "logEvent": logEvent,
+    "setAdditionalParams": setAdditionalParams,
+    "pause": pause,
+    "play": play,
+    "stop": stop
   };
 
 })(document, gadgets);
