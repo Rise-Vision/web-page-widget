@@ -49,6 +49,24 @@
               <p ng-if="!noXFrameOptions" class="text-danger">{{ "widget-web-page.warning.message" | translate }} <a ng-href="https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options" target="_blank">{{ "widget-web-page.warning.anchor" | translate}}</a>.</p>
             </div>
 
+            <!-- Refresh -->
+            <div class="form-group  ">
+              <label class="control-label" for="refresh">{{"widget-web-page.refresh.label" | translate}}</label>
+              <div class="row">
+                <div class="col-sm-4">
+                  <select id="refresh" name="refresh" ng-model="settings.additionalParams.refresh" class="form-control">
+                    <option value="0">{{"widget-web-page.refresh.none" | translate}}</option>
+                    <option value="60000">1 {{"common.units.minutes" | translate}}</option>
+                    <option value="300000">5 {{"common.units.minutes" | translate}}</option>
+                    <option value="1800000">30 {{"common.units.minutes" | translate}}</option>
+                    <option value="3600000">60 {{"common.units.minutes" | translate}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
             <!-- Region -->
             <h4>{{ "widget-web-page.region.heading" | translate}}</h4>
 

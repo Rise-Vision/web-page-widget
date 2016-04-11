@@ -71,6 +71,14 @@
         expect(element(by.model("settings.additionalParams.region.horizontal")).isDisplayed()).to.eventually.be.true;
         expect(element(by.model("settings.additionalParams.region.vertical")).isDisplayed()).to.eventually.be.true;
       });
+
+      it("Should set default value for 'Refresh'", function () {
+        element.all(by.css("select[name='refresh'] option")).then(function (elements) {
+          expect(elements.length).to.equal(5);
+        });
+
+        expect(element(by.model("settings.additionalParams.refresh")).getAttribute("value")).to.eventually.equal("0");
+      });
     });
 
     describe("Warning message", function() {
@@ -124,6 +132,7 @@
           params: {},
           additionalParams: {
             url: validUrl,
+            refresh: 0,
             region: {
               showRegion: "page",
               horizontal: 0,
