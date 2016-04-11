@@ -5,26 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Web Page Widget</title>
 
-  <script src="components/webcomponentsjs/webcomponents.min.js"></script>
-  <link rel="import" href="components/rise-storage/rise-storage.html">
-
   <!-- build:css css/webpage.min.css -->
-  <link rel="stylesheet" type="text/css" href="widget/css/webpage.css">
-  <link rel="stylesheet" type="text/css" href="components/widget-common/dist/css/background.css">
+  <link rel="stylesheet" href="widget/css/webpage.css">
+  <link rel="stylesheet" href="components/widget-common/dist/css/message.css">
   <!-- endbuild -->
 
 </head>
 <body>
 
-  <rise-storage id="backgroundStorage" refresh="15"></rise-storage>
-
-  <div id="background"></div>
-  <div id="webpage-container">
-    <div class="blocker"></div>
+  <div id="container">
     <iframe id="webpage-frame"
             frameborder="0"
             allowTransparency="true"></iframe>
   </div>
+
+  <div id="messageContainer"></div>
 
   <!-- build:e2egadgets -->
   <script src="//rvashow2.appspot.com/gadgets/gadgets.min.js"></script>
@@ -35,7 +30,7 @@
   <script src="components/widget-common/dist/logger.js"></script>
   <script src="config/config.js"></script>
   <script src="widget/webpage.js"></script>
-  <script src="components/widget-common/dist/background.js"></script>
+  <script src="components/widget-common/dist/message.js"></script>
   <script src="widget/main.js"></script>
   <script src="widget/analytics.js"></script>
   <!-- endbuild -->

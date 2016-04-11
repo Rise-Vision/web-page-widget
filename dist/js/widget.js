@@ -234,84 +234,37 @@ RiseVision.WebPage = (function (document, gadgets) {
   "use strict";
 
   // private variables
-  var _prefs = null,
-    _additionalParams = {},
-    _url = "",
-    _intervalId = null,
-    _background = null;
+  var _prefs = new gadgets.Prefs(),
+    _additionalParams = null,
+    _url = "";
+
+  var _message = null;
 
   /*
    *  Private Methods
    */
+  function _ready() {
+    gadgets.rpc.call("", "rsevent_ready", null, _prefs.getString("id"),
+      true, true, true, true, false);
+  }
 
   function _configurePage() {
-    var container = document.getElementById("webpage-container"),
+    var container = document.getElementById("container"),
       frame = document.getElementById("webpage-frame"),
-      aspectRatio =  (_prefs.getInt("rsH") / _prefs.getInt("rsW")) * 100,
-      scrollHorizVal = (_additionalParams.scrollHorizontal > 0) ?
-          _additionalParams.scrollHorizontal : 0,
-      scrollVertVal = (_additionalParams.scrollVertical > 0) ?
-          _additionalParams.scrollVertical : 0,
-      zoom = parseFloat(_additionalParams.zoom),
-      blocker, zoomStyle, marginStyle;
+      aspectRatio =  (_prefs.getInt("rsH") / _prefs.getInt("rsW")) * 100;
 
     if (container && frame) {
-      blocker = container.getElementsByClassName("blocker")[0];
-
       // Hiding iframe container, visible when the iframe successfully loads
       container.style.visibility = "hidden";
 
-      // set the padding-bottom with the aspect ratio % (responsive)
-      if (scrollVertVal !== 0) {
-        // recalculate aspect ratio
-        aspectRatio += (scrollVertVal / _prefs.getInt("rsW")) * 100;
-      }
+      // implement responsive iframe
       container.setAttribute("style", "padding-bottom:" + aspectRatio + "%");
-
-      // Configure interactivity of iframe
-      blocker.style.display = (_additionalParams.interactive) ? "none" : "block";
-      frame.setAttribute("scrolling",
-        (_additionalParams.scrollbars) ? "yes" : "no");
-
-      // Configure the zoom (scale) styling
-      zoomStyle = "-ms-zoom:" + zoom + ";" +
-        "-moz-transform: scale(" + zoom + ");" +
-        "-moz-transform-origin: 0 0;" +
-        "-o-transform: scale(" + zoom + ");" +
-        "-o-transform-origin: 0 0;" +
-        "-webkit-transform: scale(" + zoom + ");" +
-        "-webkit-transform-origin: 0 0;";
-
-      zoomStyle += "width: " + ((1 / zoom) * 100) + "%;" +
-      "height: " + ((1 / zoom) * 100) + "%;";
-
-      // Apply the zoom (scale) on the iframe
-      frame.setAttribute("style", zoomStyle);
-
-      if (scrollHorizVal !== 0 || scrollVertVal !== 0) {
-        // Configure the margin styling
-        marginStyle = "margin: " + "-" + scrollVertVal + "px 0 0 -" +
-          scrollHorizVal + "px;";
-
-        /* Apply the margin styling on the iframe while maintaining
-         the zoom styling */
-        frame.setAttribute("style", zoomStyle + marginStyle);
-      }
     }
   }
 
   function _loadFrame() {
     var frame = document.getElementById("webpage-frame"),
-      container = document.getElementById("webpage-container"),
-      hasParams = /[?#&]/.test(_url),
-      randomNum = Math.ceil(Math.random() * 100),
-      refreshURL = _url;
-
-    if (_additionalParams.refresh > 0) {
-      refreshURL = hasParams ?
-      _url + "&dummyVar=" + randomNum :
-      _url + "?dummyVar=" + randomNum;
-    }
+      container = document.getElementById("container");
 
     if (container && frame) {
       frame.onload = function () {
@@ -319,25 +272,14 @@ RiseVision.WebPage = (function (document, gadgets) {
 
         // Show the iframe container
         container.style.visibility = "visible";
-
-        // Run setInterval to reload page based on the data refresh value
-        if (_additionalParams.refresh > 0 && _intervalId === null) {
-          _intervalId = setInterval(function () {
-            _loadFrame();
-          }, _additionalParams.refresh);
-        }
       };
 
-      frame.setAttribute("src", refreshURL);
+      frame.setAttribute("src", _url);
     }
   }
 
   function _unloadFrame() {
     var frame = document.getElementById("webpage-frame");
-
-    if (_additionalParams.refresh > 0) {
-      clearInterval(_intervalId);
-    }
 
     if (frame) {
       frame.src = "about:blank";
@@ -345,12 +287,10 @@ RiseVision.WebPage = (function (document, gadgets) {
 
   }
 
-  function _ready() {
-    gadgets.rpc.call("", "rsevent_ready", null, _prefs.getString("id"),
-      true, true, true, true, false);
-  }
+  function _init() {
+    _message = new RiseVision.Common.Message(document.getElementById("container"),
+      document.getElementById("messageContainer"));
 
-  function _backgroundReady() {
     // Configure the value for _url
     _url = _additionalParams.url;
 
@@ -383,16 +323,13 @@ RiseVision.WebPage = (function (document, gadgets) {
   }
 
   function stop() {
-    _unloadFrame();
+    pause();
   }
 
-  function setAdditionalParams(params) {
-    _prefs = new gadgets.Prefs();
-    _additionalParams = params;
+  function setAdditionalParams(additionalParams) {
+    _additionalParams = JSON.parse(JSON.stringify(additionalParams));
 
-    // create and initialize the Background instance
-    _background = new RiseVision.Common.Background(_additionalParams);
-    _background.init(_backgroundReady);
+    _init();
   }
 
   return {
@@ -406,127 +343,73 @@ RiseVision.WebPage = (function (document, gadgets) {
 
 })(document, gadgets);
 
-/* global WIDGET_COMMON_CONFIG */
-
 var RiseVision = RiseVision || {};
 RiseVision.Common = RiseVision.Common || {};
 
-RiseVision.Common.Background = function (data) {
+RiseVision.Common.Message = function (mainContainer, messageContainer) {
   "use strict";
 
-  var _callback = null,
-    _ready = false,
-    _background = null,
-    _storage = null,
-    _refreshDuration = 900000, // 15 minutes
-    _isStorageFile = false,
-    _separator = "";
+  var _active = false;
 
-  /*
-   * Private Methods
-   */
-  function _refreshTimer() {
-    setTimeout(function backgroundRefresh() {
-      _background.style.backgroundImage = "url(" + data.background.image.url + _separator + "cb=" + new Date().getTime() + ")";
-      _refreshTimer();
-    }, _refreshDuration);
-  }
-
-  function _backgroundReady() {
-    _ready = true;
-
-    if (data.background.useImage && !_isStorageFile) {
-      // start the refresh poll for non-storage background image
-      _refreshTimer();
-    }
-
-    if (_callback && typeof _callback === "function") {
-      _callback();
-    }
-  }
-
-  function _configure() {
-    var str;
-
-    _background = document.getElementById("background");
-    _storage = document.getElementById("backgroundStorage");
-
-    // set the document background
-    document.body.style.background = data.background.color;
-
-    if (_background) {
-      if (data.background.useImage) {
-        _background.className = data.background.image.position;
-        _background.className = data.background.image.scale ? _background.className + " scale-to-fit"
-          : _background.className;
-
-        _isStorageFile = (Object.keys(data.backgroundStorage).length !== 0);
-
-        if (!_isStorageFile) {
-          str = data.background.image.url.split("?");
-
-          // store this for the refresh timer
-          _separator = (str.length === 1) ? "?" : "&";
-
-          _background.style.backgroundImage = "url(" + data.background.image.url + ")";
-          _backgroundReady();
-        } else {
-          if (_storage) {
-            // Rise Storage
-            _storage.addEventListener("rise-storage-response", function (e) {
-              if (!_ready) {
-                if (e.detail && e.detail.url) {
-                  // Escape single quotes.
-                  _background.style.backgroundImage = "url('" + e.detail.url.replace("'", "\\'") + "')";
-                }
-
-                _backgroundReady();
-              } else {
-                if (e.detail && e.detail.url) {
-                  // check for "changed" property and ensure it is true
-                  if (e.detail.hasOwnProperty("changed") && e.detail.changed) {
-                    // Escape single quotes.
-                    _background.style.backgroundImage = "url('" + e.detail.url.replace("'", "\\'") + "')";
-                  }
-                }
-              }
-            });
-
-            _storage.setAttribute("folder", data.backgroundStorage.folder);
-            _storage.setAttribute("fileName", data.backgroundStorage.fileName);
-            _storage.setAttribute("companyId", data.backgroundStorage.companyId);
-            _storage.setAttribute("env", WIDGET_COMMON_CONFIG.STORAGE_ENV);
-            _storage.go();
-          } else {
-            console.log("Missing element with id value of 'backgroundStorage'");
-          }
-        }
-      } else {
-        _backgroundReady();
-      }
-    } else {
-      console.log("Missing element with id value of 'background'");
+  function _init() {
+    try {
+      messageContainer.style.height = mainContainer.style.height;
+    } catch (e) {
+      console.warn("Can't initialize Message - ", e.message);
     }
   }
 
   /*
    *  Public Methods
    */
-  function init(cb) {
-    if (!_ready) {
-      if (cb) {
-        _callback = cb;
+  function hide() {
+    if (_active) {
+      // clear content of message container
+      while (messageContainer.firstChild) {
+        messageContainer.removeChild(messageContainer.firstChild);
       }
 
-      _configure();
+      // hide message container
+      messageContainer.style.display = "none";
 
-    } else if (cb && typeof cb === "function") {
-      cb();
+      // show main container
+      mainContainer.style.visibility = "visible";
+
+      _active = false;
     }
   }
 
+  function show(message) {
+    var fragment = document.createDocumentFragment(),
+      p;
+
+    if (!_active) {
+      // hide main container
+      mainContainer.style.visibility = "hidden";
+
+      messageContainer.style.display = "block";
+
+      // create message element
+      p = document.createElement("p");
+      p.innerHTML = message;
+      p.setAttribute("class", "message");
+
+      fragment.appendChild(p);
+      messageContainer.appendChild(fragment);
+
+      _active = true;
+    } else {
+      // message already being shown, update message text
+      p = messageContainer.querySelector(".message");
+      p.innerHTML = message;
+    }
+  }
+
+  _init();
+
   return {
-    "init": init
+    "hide": hide,
+    "show": show
   };
 };
 
@@ -591,19 +474,13 @@ RiseVision.Common.Background = function (data) {
     RiseVision.WebPage.stop();
   }
 
-  function polymerReady() {
-    window.removeEventListener("WebComponentsReady", polymerReady);
-
-    if (id && id !== "") {
-      gadgets.rpc.register("rscmd_play_" + id, play);
-      gadgets.rpc.register("rscmd_pause_" + id, pause);
-      gadgets.rpc.register("rscmd_stop_" + id, stop);
-      gadgets.rpc.register("rsparam_set_" + id, configure);
-      gadgets.rpc.call("", "rsparam_get", null, id, ["companyId", "displayId", "additionalParams"]);
-    }
+  if (id && id !== "") {
+    gadgets.rpc.register("rscmd_play_" + id, play);
+    gadgets.rpc.register("rscmd_pause_" + id, pause);
+    gadgets.rpc.register("rscmd_stop_" + id, stop);
+    gadgets.rpc.register("rsparam_set_" + id, configure);
+    gadgets.rpc.call("", "rsparam_get", null, id, ["companyId", "displayId", "additionalParams"]);
   }
-
-  window.addEventListener("WebComponentsReady", polymerReady);
 
 })(window, document, gadgets);
 

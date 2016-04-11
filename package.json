@@ -1,6 +1,6 @@
 {
   "name": "widget-web-page",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "Rise Vision Web Page Widget",
   "main": "gulpfile.js",
   "scripts": {

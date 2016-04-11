@@ -30,10 +30,6 @@
 
       // URL Field
       expect(element(by.css("#urlField input[name='url']")).isPresent()).to.eventually.be.true;
-
-      // Background Image Setting
-      expect(element(by.css("#background input[colorpicker]")).isPresent()).to.eventually.be.true;
-      expect(element(by.css("#background .color-wheel")).isPresent()).to.eventually.be.true;
     });
 
     it("Should correctly load default settings", function () {
@@ -45,16 +41,6 @@
 
       // URL Field input value should be empty
       expect(element(by.css("#urlField input[name='url']")).getAttribute("value")).to.eventually.equal("");
-
-      // Scrollbars checkbox should be displayed
-      expect(element(by.css("input[name='scrollbars']")).isDisplayed()).to.eventually.be.true;
-
-      expect(element(by.model("settings.additionalParams.scrollHorizontal")).getAttribute("value")).to.eventually.equal("0");
-      expect(element(by.model("settings.additionalParams.scrollVertical")).getAttribute("value")).to.eventually.equal("0");
-      expect(element(by.model("settings.additionalParams.zoom")).getAttribute("value")).to.eventually.equal("1");
-      expect(element(by.model("settings.additionalParams.interactive")).isSelected()).to.eventually.be.true;
-      expect(element(by.model("settings.additionalParams.scrollbars")).isSelected()).to.eventually.be.true;
-      expect(element(by.model("settings.additionalParams.refresh")).getAttribute("value")).to.eventually.equal("0");
     });
 
     it("Should enable Save button due to valid URL entry", function () {
@@ -77,82 +63,15 @@
       expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.true;
     });
 
-    it("Should hide Scrollbars checkbox and ensure value of false when Interactive checkbox de-selected", function () {
-      element(by.css("input[name='interactive']")).click();
-
-      // Scrollbars checkbox should be hidden
-      expect(element(by.css("input[name='scrollbars']")).isDisplayed()).to.eventually.be.false;
-
-      // Model value should be false
-      expect(element(by.model("settings.additionalParams.scrollbars")).isSelected()).to.eventually.be.false;
-    });
-
-    it("Should disable Scrollbars checkbox if Zoom selection is > 100%", function () {
-      element(by.css("select#zoom")).click();
-      element(by.css("select#zoom option[value='1.25']")).click();
-
-      // Expect Scrollbars checkbox to be disabled
-      expect(element(by.css("input[name='scrollbars'][disabled='disabled']")).isPresent()).to.eventually.be.true;
-
-      // Model value should be false
-      expect(element(by.model("settings.additionalParams.scrollbars")).isSelected()).to.eventually.be.false;
-    });
-
-    it("Should be invalid form and Save button disabled due to invalid background image URL", function () {
-      element(by.css("#urlField input[name='url']")).sendKeys(validUrl);
-
-      element(by.css("#background input[name='choice']")).click();
-
-      element(by.css("#background input[name='url']")).sendKeys(invalidImageUrl);
-
-      // save button should be disabled
-      expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.true;
-
-      // form should be invalid due to incorrect file format
-      expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.true;
-    });
-
-    it("Should be valid form and Save button enabled due to valid background image URL", function () {
-      element(by.css("#urlField input[name='url']")).sendKeys(validUrl);
-
-      element(by.css("#background input[name='choice']")).click();
-
-      element(by.css("#background input[name='url']")).sendKeys(validImageUrl);
-
-      // save button should be enabled
-      expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.false;
-
-      // form should be valid due to valid URL and valid format
-      expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.false;
-    });
-
     it("Should correctly save settings", function () {
       var settings = {
         params: {},
         additionalParams: {
-          url: validUrl,
-          scrollHorizontal: 0,
-          scrollVertical: 0,
-          zoom: 1,
-          interactive: false,
-          scrollbars: false,
-          refresh: 0,
-          "background": {
-            "color": "rgba(255,255,255,0)",
-            "useImage": false,
-            "image": {
-              "url": "",
-              "position": "top-left",
-              "scale": true
-            }
-          },
-          "backgroundStorage": {}
+          url: validUrl
         }
       };
 
       element(by.css("#urlField input[name='url']")).sendKeys(validUrl);
-
-      element(by.css("input[name='interactive']")).click();
 
       element(by.id("save")).click();
 
