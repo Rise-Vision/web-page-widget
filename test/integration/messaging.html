@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Web Page Widget</title>
+
+  <link rel="stylesheet" type="text/css" href="../../src/widget/css/webpage.css">
+  <link rel="stylesheet" href="../../src/components/widget-common/dist/css/message.css">
+
+  <script src="../../src/components/web-component-tester/browser.js"></script>
+
+</head>
+<body>
+
+<div id="container">
+  <iframe id="webpage-frame"
+          frameborder="0"
+          allowTransparency="true"></iframe>
+</div>
+
+<div id="messageContainer"></div>
+
+<script src="../data/webpage.js"></script>
+
+<script src="../../node_modules/widget-tester/mocks/gadget-mocks.js"></script>
+<script src="../../node_modules/widget-tester/mocks/logger-mock.js"></script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+<script src="../../src/components/widget-common/dist/config.js"></script>
+<script src="../../src/widget/webpage.js"></script>
+<script src="../../src/components/widget-common/dist/message.js"></script>
+
+<script>
+  var paramsStub, server;
+
+  paramsStub = sinon.stub(RiseVision.WebPage, "setAdditionalParams", function (names) {
+    server = sinon.fakeServer.create();
+    server.respondImmediately = true;
+    server.respondWith([200, { "X-Frame-Options": "SAMEORIGIN" }, "Page Content"]);
+
+    paramsStub.restore();
+    RiseVision.WebPage.setAdditionalParams(names);
+  });
+
+  suite("Messaging", function() {
+    suiteTeardown(function() {
+      server.restore();
+    });
+
+    suite("Same origin", function() {
+      test("should show message that web page can't be displayed", function() {
+        assert.equal(document.querySelector(".message").innerHTML, "Please note that the X-Frame-Options header has been detected in the request response for the web page provided and will prevent the web page from appearing.");
+      });
+    });
+  });
+</script>
+
+<script src="../../src/widget/main.js"></script>
+</body>
+</html>

@@ -22,6 +22,29 @@ RiseVision.WebPage = (function (document, gadgets) {
       true, true, true, true, false);
   }
 
+  function _validateUrl(cb) {
+    var proxyUrl = "https://proxy.risevision.com/" + _url,
+      request = new XMLHttpRequest();
+
+    function handleProxyResponse(e) {
+      var success = true,
+        header = e.target.getResponseHeader("X-Frame-Options");
+
+      if (header && (header.toUpperCase() === "SAMEORIGIN")) {
+        success = false;
+        _message.show("Please note that the X-Frame-Options header has been detected in the request response for the web page provided and will prevent the web page from appearing.");
+      }
+
+      if (cb && (typeof cb === "function")) {
+        cb(success);
+      }
+    }
+
+    request.addEventListener("load", handleProxyResponse);
+    request.open("GET", proxyUrl);
+    request.send();
+  }
+
   function _configurePage() {
     var container = document.getElementById("container"),
       frame = document.getElementById("webpage-frame"),
@@ -73,8 +96,13 @@ RiseVision.WebPage = (function (document, gadgets) {
       _url = "http://" + _url;
     }
 
-    _configurePage();
-    _ready();
+    _validateUrl(function(success) {
+      if (success) {
+        _configurePage();
+      }
+
+      _ready();
+    });
   }
 
   /*
