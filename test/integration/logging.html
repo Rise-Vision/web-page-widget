@@ -33,9 +33,10 @@
 <script src="../../src/components/widget-common/dist/message.js"></script>
 
 <script>
-  var paramsStub, server;
+  var paramsStub, spy, server;
 
   paramsStub = sinon.stub(RiseVision.WebPage, "setAdditionalParams", function (names) {
+    spy = sinon.spy(RiseVision.Common.LoggerUtils, "logEvent");
     server = sinon.fakeServer.create();
     server.respondImmediately = true;
     server.respondWith([200, { "X-Frame-Options": "SAMEORIGIN" }, "Page Content"]);
@@ -44,14 +45,31 @@
     RiseVision.WebPage.setAdditionalParams(names);
   });
 
-  suite("Messaging", function() {
+  suite("Logging", function(){
+    var table = "webpage_events",
+      params = {
+        "url": window.gadget.settings.additionalParams.url,
+        "company_id": '"companyId"',
+        "display_id": '"displayId"'
+      };
+
     suiteTeardown(function() {
+      spy.restore();
       server.restore();
     });
 
+    teardown(function() {
+      RiseVision.Common.LoggerUtils.logEvent.restore();
+    });
+
     suite("Same Origin Header", function() {
-      test("should show message that web page can't be displayed", function() {
-        assert.equal(document.querySelector(".message").innerHTML, "Please note that the X-Frame-Options header has been detected in the request response for the web page provided and will prevent the web page from appearing.");
+      test("should log 'X-Frame-Options header' error", function() {
+        params.event = "error";
+        params.event_details = "X-Frame-Options header";
+        params.error_details = "SAMEORIGIN";
+
+        assert(spy.calledOnce);
+        assert(spy.calledWith(table, params));
       });
     });
   });

@@ -257,8 +257,16 @@ RiseVision.WebPage = (function (document, gadgets) {
         header = e.target.getResponseHeader("X-Frame-Options");
 
       if (header && (header.toUpperCase() === "SAMEORIGIN")) {
-        success = false;
+        logEvent({
+          "event": "error",
+          "event_details": "X-Frame-Options header",
+          "error_details": "SAMEORIGIN",
+          "url": _url
+        });
+
         _message.show("Please note that the X-Frame-Options header has been detected in the request response for the web page provided and will prevent the web page from appearing.");
+
+        success = false;
       }
 
       if (cb && (typeof cb === "function")) {
