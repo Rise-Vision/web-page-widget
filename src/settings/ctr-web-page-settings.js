@@ -37,6 +37,7 @@ angular.module("risevision.widget.web-page.settings")
     params: {},
     additionalParams: {
       url: "",
+      refresh: 0,
       region: {
         showRegion: "page",
         horizontal: 0,

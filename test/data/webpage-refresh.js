@@ -6,12 +6,7 @@
     "params": {},
     "additionalParams": {
       "url": "http://www.risevision.com",
-      "refresh": 0,
-      region: {
-        showRegion: "region",
-        horizontal: 10,
-        vertical: 20
-      }
+      "refresh": 60000 // 1 minute
     }
   };
 })(window);
