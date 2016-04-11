@@ -33,8 +33,8 @@
             <i class="fa fa-times half-top"></i>
           </button>
           <h3 class="modal-title">
-            {{"web-page.settings" | translate }}
-            <a class="btn btn-link" href="https://github.com/Rise-Vision/widget-time-date" target="_blank">
+            {{"widget-web-page.settings" | translate }}
+            <a class="btn btn-link" href="https://github.com/Rise-Vision/widget-web-page" target="_blank">
               <i class="fa fa-github fa-2x icon-gray"></i>
             </a>
           </h3>
@@ -43,9 +43,14 @@
         <!-- Modal Body-->
         <form role="form" name="settingsForm">
           <div class="modal-body">
+
             <!-- URL -->
-            <url-field id="urlField" url="settings.additionalParams.url" hide-storage="hide"
-                       ng-model="urlentry" valid></url-field>
+            <div class="form-group">
+              <url-field id="pageUrl" name="pageUrl" url="settings.additionalParams.url" hide-storage="hide"
+                         ng-model="urlentry" valid></url-field>
+              <p ng-if="!noXFrameOptions" class="text-danger">{{ "widget-web-page.warning.message" | translate }} <a ng-href="https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options" target="_blank">{{ "widget-web-page.warning.anchor" | translate}}</a>.</p>
+            </div>
+
           </div>
 
           <!-- Modal Footer-->
@@ -83,6 +88,7 @@
   <script src="settings/settings-app.js"></script>
   <script src="components/widget-settings-ui-core/dist/widget-settings-ui-core.js"></script>
   <script src="settings/ctr-web-page-settings.js"></script>
+  <script src="settings/svc-xframe-options.js"></script>
   <!-- endbuild -->
 
   <!-- build:e2egadgets -->
