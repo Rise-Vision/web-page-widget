@@ -10,7 +10,8 @@ RiseVision.WebPage = (function (document, gadgets) {
   // private variables
   var _prefs = new gadgets.Prefs(),
     _additionalParams = null,
-    _url = "";
+    _url = "",
+    _vertical = 0;
 
   var _message = null;
 
@@ -64,8 +65,36 @@ RiseVision.WebPage = (function (document, gadgets) {
       // Hiding iframe container, visible when the iframe successfully loads
       container.style.visibility = "hidden";
 
+      _setRegion(frame);
+
       // implement responsive iframe
+      if (_vertical !== 0) {
+        aspectRatio += (_vertical / _prefs.getInt("rsW")) * 100;
+      }
+
       container.setAttribute("style", "padding-bottom:" + aspectRatio + "%");
+    }
+  }
+
+  function _setRegion(frame) {
+    var marginStyle = "",
+      horizontal = 0;
+
+    if (_additionalParams.region && _additionalParams.region.showRegion &&
+      (_additionalParams.region.showRegion === "region")) {
+      if (_additionalParams.region.horizontal > 0) {
+        horizontal = _additionalParams.region.horizontal;
+      }
+
+      if (_additionalParams.region.vertical > 0) {
+        _vertical = _additionalParams.region.vertical;
+      }
+
+      // Apply negative margins in order to show a region.
+      if ((horizontal !== 0) || (_vertical !== 0)) {
+        marginStyle = "margin: " + "-" + _vertical + "px 0 0 -" + horizontal + "px;";
+        frame.setAttribute("style", marginStyle);
+      }
     }
   }
 

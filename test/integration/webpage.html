@@ -71,7 +71,9 @@
 
       test("should set container bottom padding with responsive aspect ratio", function() {
         // remove decimals for general assertion
-        var expectedRatio = parseFloat(((window.innerHeight / window.innerWidth) * 100)),
+        var prefs = new gadgets.Prefs(),
+          expectedRatio = parseFloat((prefs.getInt("rsH") / prefs.getInt("rsW") * 100) +
+            (window.gadget.settings.additionalParams.region.vertical / prefs.getInt("rsW") * 100)),
           actualRatio = parseFloat(document.getElementById("container").style.paddingBottom.split("%")[0]);
 
         assert.notEqual(document.getElementById("container").style.paddingBottom, "");
@@ -79,6 +81,12 @@
         assert.approximately(expectedRatio, actualRatio, 0.1);
       });
 
+    });
+
+    suite("Region", function () {
+      test("should apply negative top and left margins to iframe", function () {
+        assert.equal(document.getElementById("webpage-frame").getAttribute("style"), "margin: -20px 0 0 -10px;");
+      });
     });
 
     suite("Loading webpage", function () {

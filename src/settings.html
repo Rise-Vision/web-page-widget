@@ -51,6 +51,60 @@
               <p ng-if="!noXFrameOptions" class="text-danger">{{ "widget-web-page.warning.message" | translate }} <a ng-href="https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options" target="_blank">{{ "widget-web-page.warning.anchor" | translate}}</a>.</p>
             </div>
 
+            <!-- Region -->
+            <h4>{{ "widget-web-page.region.heading" | translate}}</h4>
+
+            <!-- Show Entire Page -->
+            <div class="radio">
+              <label>
+                <input type="radio" ng-model="settings.additionalParams.region.showRegion" value="page">
+                {{ "widget-web-page.region.page" | translate}}
+              </label>
+            </div>
+
+            <!-- Show a Region -->
+            <div class="radio">
+              <label>
+                <input type="radio" ng-model="settings.additionalParams.region.showRegion" value="region">
+                {{ "widget-web-page.region.region" | translate}}
+              </label>
+            </div>
+
+            <div ng-show="settings.additionalParams.region.showRegion === 'region'">
+              <!-- Horizontal Scroll -->
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="horizontal" class="control-label">
+                      {{ "widget-web-page.region.horizontal" | translate}}
+                    </label>
+                    <div class="input-group">
+                      <input id="horizontal" type="number" class="form-control"
+                        ng-model="settings.additionalParams.region.horizontal" />
+                      <span class="input-group-addon">{{"common.units.pixels" | translate}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Vertical Scroll -->
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label class="control-label" for="vertical">
+                      {{ "widget-web-page.region.vertical" | translate}}
+                    </label>
+                    <div class="input-group">
+                      <input id="vertical" type="number" class="form-control"
+                        ng-model="settings.additionalParams.region.vertical" />
+                      <span class="input-group-addon">{{"common.units.pixels" | translate}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End Region -->
+
           </div>
 
           <!-- Modal Footer-->

@@ -5,7 +5,12 @@
   window.gadget.settings = {
     "params": {},
     "additionalParams": {
-      "url": "http://www.risevision.com"
+      "url": "http://www.risevision.com",
+      region: {
+        showRegion: "region",
+        horizontal: 10,
+        vertical: 20
+      }
     }
   };
 })(window);

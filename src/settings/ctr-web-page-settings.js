@@ -36,6 +36,11 @@ angular.module("risevision.widget.web-page.settings")
   .value("defaultSettings", {
     params: {},
     additionalParams: {
-      url: ""
+      url: "",
+      region: {
+        showRegion: "page",
+        horizontal: 0,
+        vertical: 0
+      }
     }
   });
