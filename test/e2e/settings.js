@@ -15,71 +15,110 @@
 
   describe("Web Page Settings - e2e Testing", function() {
     var validUrl = "http://www.valid-url.com",
-      invalidUrl = "http://w",
-      validImageUrl = validUrl + "/image.jpg",
-      invalidImageUrl = validUrl + "/image.pdf";
+      invalidUrl = "http://w";
 
     beforeEach(function () {
       browser.get("/src/settings-e2e.html");
     });
 
-    it("Should load all components", function () {
-      // Widget Button Toolbar
-      expect(element(by.css("button#save")).isPresent()).to.eventually.be.true;
-      expect(element(by.css("button#cancel")).isPresent()).to.eventually.be.true;
+    describe("Initialization", function () {
+      it("Should load URL Field component", function () {
+        expect(element(by.css("#pageUrl input[name='url']")).isPresent()).to.eventually.be.true;
+      });
 
-      // URL Field
-      expect(element(by.css("#urlField input[name='url']")).isPresent()).to.eventually.be.true;
+      it("Should load Save button", function () {
+        expect(element(by.css("button#save")).isPresent()).to.eventually.be.true;
+      });
+
+      it("Should load Cancel button", function () {
+        expect(element(by.css("button#cancel")).isPresent()).to.eventually.be.true;
+      });
     });
 
-    it("Should correctly load default settings", function () {
-      // save button should be disabled
-      expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.true;
+    describe("Defaults", function () {
 
-      // form should be invalid due to URL Field empty entry
-      expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.true;
+      it("Should apply empty value for URL Field", function () {
+        expect(element(by.css("#pageUrl input[name='url']")).getAttribute("value")).to.eventually.equal("");
+      });
 
-      // URL Field input value should be empty
-      expect(element(by.css("#urlField input[name='url']")).getAttribute("value")).to.eventually.equal("");
+      it("Should apply form as invalid due to URL Field empty entry", function () {
+        expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.true;
+      });
+
+      it("Should disable Save button", function () {
+        expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.true;
+      });
+
+      it("Should not show warning message regarding X-Frame-Options feed", function () {
+        expect(element(by.css("#pageUrl + p.text-danger")).isPresent()).to.eventually.be.false;
+      });
+
     });
 
-    it("Should enable Save button due to valid URL entry", function () {
-      element(by.css("#urlField input[name='url']")).sendKeys(validUrl);
+    describe("Warning message", function() {
+      it("should not show warning when URL Field is receiving input", function() {
+        element(by.css("#pageUrl input[name='url']")).sendKeys("http://test");
 
-      // save button should be enabled
-      expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.false;
+        expect(element(by.css("#pageUrl + p.text-danger")).isPresent()).to.eventually.be.false;
+      });
 
-      // form should be valid due to URL Field empty entry
-      expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.false;
+      it("should show warning message when a webpage with X-Frame-Options header is present", function () {
+        element(by.css("#pageUrl input[name='url']")).sendKeys("http://www.google.com");
+        // remove focus
+        element(by.css("h3.modal-title")).click();
+
+        expect(element(by.css("#pageUrl + p.text-danger")).isPresent()).to.eventually.be.true;
+      });
+
+      it("should not show warning message when a webpage doesn't specify X-Frame-Options header", function () {
+        element(by.css("#pageUrl input[name='url']")).sendKeys("http://www.risevision.com");
+        // remove focus
+        element(by.css("h3.modal-title")).click();
+
+        expect(element(by.css("#pageUrl + p.text-danger")).isPresent()).to.eventually.be.false;
+      });
     });
 
-    it("Should be invalid form and Save button disabled due to invalid URL", function () {
-      element(by.css("#urlField input[name='url']")).sendKeys(invalidUrl);
+    describe("Saving", function () {
 
-      // save button should be disabled
-      expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.true;
+      it("Should enable Save button due to valid URL entry", function () {
+        element(by.css("#pageUrl input[name='url']")).sendKeys(validUrl);
 
-      // form should be invalid due to invalid URL
-      expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.true;
-    });
+        // save button should be enabled
+        expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.false;
 
-    it("Should correctly save settings", function () {
-      var settings = {
-        params: {},
-        additionalParams: {
-          url: validUrl
-        }
-      };
+        // form should be valid due to URL Field empty entry
+        expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.false;
+      });
 
-      element(by.css("#urlField input[name='url']")).sendKeys(validUrl);
+      it("Should be invalid form and Save button disabled due to invalid URL", function () {
+        element(by.css("#pageUrl input[name='url']")).sendKeys(invalidUrl);
 
-      element(by.id("save")).click();
+        // save button should be disabled
+        expect(element(by.css("button#save[disabled=disabled")).isPresent()).to.eventually.be.true;
 
-      expect(browser.executeScript("return window.result")).to.eventually.deep.equal(
-        {
-          'additionalParams': JSON.stringify(settings.additionalParams),
-          'params': ''
-        });
+        // form should be invalid due to invalid URL
+        expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.true;
+      });
+
+      it("Should correctly save settings", function () {
+        var settings = {
+          params: {},
+          additionalParams: {
+            url: validUrl
+          }
+        };
+
+        element(by.css("#pageUrl input[name='url']")).sendKeys(validUrl);
+
+        element(by.id("save")).click();
+
+        expect(browser.executeScript("return window.result")).to.eventually.deep.equal(
+          {
+            'additionalParams': JSON.stringify(settings.additionalParams),
+            'params': ''
+          });
+      });
     });
 
   });
