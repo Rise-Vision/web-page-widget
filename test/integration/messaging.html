@@ -51,7 +51,9 @@
 
     suite("Same Origin Header", function() {
       test("should show message that web page can't be displayed", function() {
-        assert.equal(document.querySelector(".message").innerHTML, "Please note that the X-Frame-Options header has been detected in the request response for the web page provided and will prevent the web page from appearing.");
+        assert.equal(document.querySelector(".message").innerHTML, "The owner of the Web Page at " +
+          "the URL provided does not allow the Page to be embedded within an iFrame. If possible, " +
+          "please contact the Web Page owner to discuss X-Frame-Options.");
       });
     });
   });

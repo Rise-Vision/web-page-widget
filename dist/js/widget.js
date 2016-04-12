@@ -264,7 +264,9 @@ RiseVision.WebPage = (function (document, gadgets) {
           "url": _url
         });
 
-        _message.show("Please note that the X-Frame-Options header has been detected in the request response for the web page provided and will prevent the web page from appearing.");
+        _message.show("The owner of the Web Page at the URL provided does not allow the Page to " +
+          "be embedded within an iFrame. If possible, please contact the Web Page owner to " +
+          "discuss X-Frame-Options.");
 
         success = false;
       }
