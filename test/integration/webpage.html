@@ -85,8 +85,22 @@
 
     suite("Region", function () {
       test("should apply negative top and left margins to iframe", function () {
-        assert.equal(document.getElementById("webpage-frame").getAttribute("style"), "margin: -20px 0 0 -10px;");
+        assert.equal(document.getElementById("webpage-frame").style.margin, "-20px 0px 0px -10px");
       });
+    });
+
+    suite("iframe scale", function () {
+
+      test("should set scale to 75%", function() {
+        assert.equal(document.getElementById("webpage-frame").style.webkitTransform, "scale(0.75)");
+      });
+
+      test("should set width and height for a scale of 75%", function() {
+        var value = "133.333%";
+        assert.equal(document.getElementById("webpage-frame").style.width, value);
+        assert.equal(document.getElementById("webpage-frame").style.height, value);
+      });
+
     });
 
     suite("Loading webpage", function () {
