@@ -42,6 +42,7 @@ angular.module("risevision.widget.web-page.settings")
         showRegion: "page",
         horizontal: 0,
         vertical: 0
-      }
+      },
+      zoom: 1
     }
   });
