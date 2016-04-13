@@ -53,3 +53,15 @@ body {
   width: 100%;
   height: 100%;
 }
+
+#container .blocker {
+  /* Positioning */
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+
+  /* Display & Box Model */
+  width: 100%;
+  height: 100%;
+}

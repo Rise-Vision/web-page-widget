@@ -61,6 +61,23 @@
         expect(element(by.css("input[type='radio'][value='page']")).isSelected()).to.eventually.be.true;
       });
 
+      it("Should apply ''Never Refresh' for Refresh'", function () {
+        element.all(by.css("select[name='refresh'] option")).then(function (elements) {
+          expect(elements.length).to.equal(5);
+        });
+
+        expect(element(by.model("settings.additionalParams.refresh")).getAttribute("value")).to.eventually.equal("0");
+      });
+
+      it("Should not select 'Allow Interaction'", function () {
+        expect(element(by.model("settings.additionalParams.interactivity.interactive")).isSelected()).to.eventually.be.false;
+      });
+
+      it("Should now show or select 'Scrollbars Enabled'", function () {
+        expect(element(by.css("input[name='scrollbars']")).isDisplayed()).to.eventually.be.false;
+        expect(element(by.model("settings.additionalParams.interactivity.scrollbars")).isSelected()).to.eventually.be.false;
+      });
+
     });
 
     describe("Visibility", function() {
@@ -76,13 +93,43 @@
         expect(element(by.model("settings.additionalParams.region.vertical")).isDisplayed()).to.eventually.be.true;
       });
 
-      it("Should set default value for 'Refresh'", function () {
-        element.all(by.css("select[name='refresh'] option")).then(function (elements) {
-          expect(elements.length).to.equal(5);
-        });
+      it("Should show 'Scrollbars Enabled' when 'Allow Interaction' is selected", function () {
+        element(by.css("input[name='interactive']")).click();
 
-        expect(element(by.model("settings.additionalParams.refresh")).getAttribute("value")).to.eventually.equal("0");
+        expect(element(by.css("input[name='scrollbars']")).isDisplayed()).to.eventually.be.true;
       });
+
+      it("Should not show 'Scrollbars Enabled' and ensure value is false when 'Allow Interaction' deselected", function () {
+        // 'Allow Interaction' is selected
+        element(by.css("input[name='interactive']")).click();
+        expect(element(by.model("settings.additionalParams.interactivity.interactive")).isSelected()).to.eventually.be.true;
+
+        // select 'Scrollbars Enabled'
+        element(by.css("input[name='scrollbars']")).click();
+        expect(element(by.model("settings.additionalParams.interactivity.scrollbars")).isSelected()).to.eventually.be.true;
+
+        // deselect 'Allow Interaction'
+        element(by.css("input[name='interactive']")).click();
+
+        expect(element(by.css("input[name='scrollbars']")).isDisplayed()).to.eventually.be.false;
+        expect(element(by.model("settings.additionalParams.interactivity.scrollbars")).isSelected()).to.eventually.be.false;
+      });
+
+      it("Should disable 'Scrollbars Enabled' and ensure value is false  if Zoom selection is > 100%", function () {
+        element(by.css("select[name='zoom']")).click();
+        element(by.css("select[name='zoom'] option[value='1.25']")).click();
+
+        expect(element(by.css("input[name='scrollbars'][disabled='disabled']")).isPresent()).to.eventually.be.true;
+        expect(element(by.model("settings.additionalParams.interactivity.scrollbars")).isSelected()).to.eventually.be.false;
+      });
+
+      it("Should enable 'Scrollbars Enabled' if Zoom selection is <= 100%", function () {
+        element(by.css("select[name='zoom']")).click();
+        element(by.css("select[name='zoom'] option[value='0.75']")).click();
+
+        expect(element(by.css("input[name='scrollbars'][disabled='disabled']")).isPresent()).to.eventually.be.false;
+      });
+
     });
 
     describe("Warning message", function() {
@@ -141,13 +188,17 @@
         var settings = {
           params: {},
           additionalParams: {
-            url: validUrl,
+            interactivity: {
+              interactive: false,
+              scrollbars: false
+            },
             refresh: 0,
             region: {
               showRegion: "page",
               horizontal: 0,
               vertical: 0
             },
+            url: validUrl,
             zoom: 1
           }
         };

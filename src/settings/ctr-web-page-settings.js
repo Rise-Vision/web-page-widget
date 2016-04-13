@@ -32,17 +32,37 @@ angular.module("risevision.widget.web-page.settings")
 
       });
 
+      $scope.$watch("settings.additionalParams.zoom", function (value) {
+        if (typeof value !== "undefined") {
+          if (value > 1) {
+            $scope.settings.additionalParams.interactivity.scrollbars = false;
+          }
+        }
+      });
+
+      $scope.$watch("settings.additionalParams.interactivity.interactive", function (value) {
+        if (typeof value !== "undefined") {
+          if (!value) {
+            $scope.settings.additionalParams.interactivity.scrollbars = false;
+          }
+        }
+      });
+
     }])
   .value("defaultSettings", {
     params: {},
     additionalParams: {
-      url: "",
+      interactivity: {
+        interactive: false,
+        scrollbars: false
+      },
       refresh: 0,
       region: {
         showRegion: "page",
         horizontal: 0,
         vertical: 0
       },
+      url: "",
       zoom: 1
     }
   });
