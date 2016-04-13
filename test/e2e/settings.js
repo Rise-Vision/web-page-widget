@@ -53,6 +53,24 @@
         expect(element(by.css("#pageUrl + p.text-danger")).isPresent()).to.eventually.be.false;
       });
 
+      it("Should select 'Show Entire Page'", function () {
+        expect(element(by.css("input[type='radio'][value='page']")).isSelected()).to.eventually.be.true;
+      });
+
+    });
+
+    describe("Visibility", function() {
+      it("Should not show scroll settings if 'Show Entire Page' is selected", function() {
+        expect(element(by.model("settings.additionalParams.region.horizontal")).isDisplayed()).to.eventually.be.false;
+        expect(element(by.model("settings.additionalParams.region.vertical")).isDisplayed()).to.eventually.be.false;
+      });
+
+      it("Should show scroll settings if 'Show a Region' is selected", function() {
+        element(by.css("input[type='radio'][value='region']")).click();
+
+        expect(element(by.model("settings.additionalParams.region.horizontal")).isDisplayed()).to.eventually.be.true;
+        expect(element(by.model("settings.additionalParams.region.vertical")).isDisplayed()).to.eventually.be.true;
+      });
     });
 
     describe("Warning message", function() {
@@ -105,7 +123,12 @@
         var settings = {
           params: {},
           additionalParams: {
-            url: validUrl
+            url: validUrl,
+            region: {
+              showRegion: "page",
+              horizontal: 0,
+              vertical: 0
+            }
           }
         };
 
