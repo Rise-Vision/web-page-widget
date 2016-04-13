@@ -237,7 +237,8 @@ RiseVision.WebPage = (function (document, gadgets) {
   var _prefs = new gadgets.Prefs(),
     _additionalParams = null,
     _url = "",
-    _vertical = 0;
+    _vertical = 0,
+    _intervalId = null;
 
   var _message = null;
 
@@ -324,6 +325,13 @@ RiseVision.WebPage = (function (document, gadgets) {
     }
   }
 
+  function _startRefreshInterval() {
+    _intervalId = setInterval(function () {
+      // call public function for integration testing purposes
+      _loadFrame();
+    }, _additionalParams.refresh);
+  }
+
   function _loadFrame() {
     var frame = document.getElementById("webpage-frame"),
       container = document.getElementById("container");
@@ -334,6 +342,11 @@ RiseVision.WebPage = (function (document, gadgets) {
 
         // Show the iframe container
         container.style.visibility = "visible";
+
+        // check if refresh interval should be started
+        if (_additionalParams.refresh > 0 && _intervalId === null) {
+          _startRefreshInterval();
+        }
       };
 
       frame.setAttribute("src", _url);
@@ -342,6 +355,10 @@ RiseVision.WebPage = (function (document, gadgets) {
 
   function _unloadFrame() {
     var frame = document.getElementById("webpage-frame");
+
+    if (_additionalParams.refresh > 0) {
+      clearInterval(_intervalId);
+    }
 
     if (frame) {
       frame.src = "about:blank";

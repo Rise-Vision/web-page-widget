@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Web Page Widget</title>
+
+  <link rel="stylesheet" type="text/css" href="../../src/widget/css/webpage.css">
+  <link rel="stylesheet" href="../../src/components/widget-common/dist/css/message.css">
+
+  <script src="../../src/components/web-component-tester/browser.js"></script>
+
+</head>
+<body>
+
+<div id="container">
+  <iframe id="webpage-frame"
+          frameborder="0"
+          allowTransparency="true"></iframe>
+</div>
+
+<div id="messageContainer"></div>
+
+<script src="../data/webpage-refresh.js"></script>
+
+<script src="../../node_modules/widget-tester/mocks/gadget-mocks.js"></script>
+<script src="../../node_modules/widget-tester/mocks/logger-mock.js"></script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+<script src="../../src/components/widget-common/dist/config.js"></script>
+<script src="../../src/widget/webpage.js"></script>
+<script src="../../src/components/widget-common/dist/message.js"></script>
+
+<script>
+
+  var paramsStub, server, clock;
+
+  paramsStub = sinon.stub(RiseVision.WebPage, "setAdditionalParams", function (names) {
+    server = sinon.fakeServer.create();
+    server.respondImmediately = true;
+    server.respondWith("Page Content");
+
+    clock = sinon.useFakeTimers();
+
+    paramsStub.restore();
+    RiseVision.WebPage.setAdditionalParams(names);
+  });
+
+  suite("Refresh", function() {
+
+    suiteTeardown(function() {
+      server.restore();
+      clock.restore();
+    });
+
+    test("Should refresh the page after 1 minute", function () {
+      //TODO: revisit this, tried several ways to do a test but couldn't get it to work
+    });
+
+  });
+</script>
+
+<script src="../../src/widget/main.js"></script>
+</body>
+</html>
