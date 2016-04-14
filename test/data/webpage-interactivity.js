@@ -6,17 +6,16 @@
     "params": {},
     "additionalParams": {
       "interactivity": {
-        "interactive": false,
-        "scrollbars": false
+        "interactive": true,
+        "scrollbars": true
       },
       "refresh": 0,
       "region": {
-        "showRegion": "region",
-        "horizontal": 10,
-        "vertical": 20
+        "showRegion": "page",
+        "horizontal": 0,
+        "vertical": 0
       },
-      "url": "http://www.risevision.com",
-      "zoom": "0.75"
+      "url": "http://www.risevision.com"
     }
   };
 })(window);
