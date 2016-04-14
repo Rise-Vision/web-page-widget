@@ -283,6 +283,16 @@ RiseVision.WebPage = (function (document, gadgets) {
     request.send();
   }
 
+  function _setInteractivity() {
+    var frame = document.getElementById("webpage-frame"),
+      blocker = document.querySelector(".blocker");
+
+    blocker.style.display = (_additionalParams.interactivity.interactive) ? "none" : "block";
+
+    frame.setAttribute("scrolling",
+      (_additionalParams.interactivity.interactive && _additionalParams.interactivity.scrollbars) ? "yes" : "no");
+  }
+
   function _configurePage() {
     var container = document.getElementById("container"),
       frame = document.getElementById("webpage-frame"),
@@ -292,6 +302,7 @@ RiseVision.WebPage = (function (document, gadgets) {
       // Hiding iframe container, visible when the iframe successfully loads
       container.style.visibility = "hidden";
 
+      _setInteractivity();
       _setRegion(frame);
       _setZoom(frame);
 
