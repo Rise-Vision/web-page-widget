@@ -41,6 +41,10 @@
         expect(element(by.css("#pageUrl input[name='url']")).getAttribute("value")).to.eventually.equal("");
       });
 
+      it("Should apply 100% value for Zoom", function () {
+        expect(element(by.model('settings.additionalParams.zoom')).getAttribute("value")).to.eventually.equal("1");
+      });
+
       it("Should apply form as invalid due to URL Field empty entry", function () {
         expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.true;
       });
@@ -127,6 +131,12 @@
         expect(element(by.css("form[name='settingsForm'].ng-invalid")).isPresent()).to.eventually.be.true;
       });
 
+      it("Should be able to set the zoom to 50%", function () {
+        element(by.cssContainingText('option', '50%')).click();
+
+        expect(element(by.model('settings.additionalParams.zoom')).getAttribute("value")).to.eventually.equal("0.50");
+      });
+
       it("Should correctly save settings", function () {
         var settings = {
           params: {},
@@ -137,7 +147,8 @@
               showRegion: "page",
               horizontal: 0,
               vertical: 0
-            }
+            },
+            zoom: 1
           }
         };
 

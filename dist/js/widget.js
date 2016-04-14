@@ -293,6 +293,7 @@ RiseVision.WebPage = (function (document, gadgets) {
       container.style.visibility = "hidden";
 
       _setRegion(frame);
+      _setZoom(frame);
 
       // implement responsive iframe
       if (_vertical !== 0) {
@@ -301,6 +302,32 @@ RiseVision.WebPage = (function (document, gadgets) {
 
       container.setAttribute("style", "padding-bottom:" + aspectRatio + "%");
     }
+  }
+
+  function _setZoom(frame) {
+   var zoom = parseFloat(_additionalParams.zoom),
+     zoomStyle;
+
+    // Configure the zoom (scale) styling
+    zoomStyle = "-ms-zoom:" + zoom + ";" +
+      "-moz-transform: scale(" + zoom + ");" +
+      "-moz-transform-origin: 0 0;" +
+      "-o-transform: scale(" + zoom + ");" +
+      "-o-transform-origin: 0 0;" +
+      "-webkit-transform: scale(" + zoom + ");" +
+      "-webkit-transform-origin: 0 0;" +
+      "transform: scale(" + zoom + ");" +
+      "transform-origin: 0 0;";
+
+    zoomStyle += "width: " + ((1 / zoom) * 100) + "%;" +
+      "height: " + ((1 / zoom) * 100) + "%;";
+
+    var currentStyle = frame.getAttribute("style");
+    if (currentStyle) {
+      zoomStyle = currentStyle + zoomStyle;
+    }
+
+    frame.setAttribute("style", zoomStyle);
   }
 
   function _setRegion(frame) {
@@ -320,6 +347,12 @@ RiseVision.WebPage = (function (document, gadgets) {
       // Apply negative margins in order to show a region.
       if ((horizontal !== 0) || (_vertical !== 0)) {
         marginStyle = "margin: " + "-" + _vertical + "px 0 0 -" + horizontal + "px;";
+
+        var currentStyle = frame.getAttribute("style");
+        if (currentStyle) {
+          marginStyle = currentStyle + marginStyle;
+        }
+
         frame.setAttribute("style", marginStyle);
       }
     }
