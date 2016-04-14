@@ -9,6 +9,7 @@ RiseVision.WebPage = (function (document, gadgets) {
 
   // private variables
   var _prefs = new gadgets.Prefs(),
+    _utils = RiseVision.Common.Utilities,
     _additionalParams = null,
     _url = "",
     _vertical = 0,
@@ -145,8 +146,11 @@ RiseVision.WebPage = (function (document, gadgets) {
 
   function _startRefreshInterval() {
     _intervalId = setInterval(function () {
-      // call public function for integration testing purposes
-      _loadFrame();
+      _utils.hasInternetConnection("img/transparent.png", function (hasInternet) {
+        if (hasInternet) {
+          _loadFrame();
+        }
+      });
     }, _additionalParams.refresh);
   }
 

@@ -97,7 +97,10 @@
   });
 
   gulp.task("images", function() {
-    return gulp.src("src/components/rv-bootstrap-formhelpers/img/bootstrap-formhelpers-googlefonts.png")
+    return gulp.src([
+      "src/components/rv-bootstrap-formhelpers/img/bootstrap-formhelpers-googlefonts.png",
+      "src/widget/img/transparent.png"
+    ])
       .pipe(gulp.dest("dist/img"));
   });
 
