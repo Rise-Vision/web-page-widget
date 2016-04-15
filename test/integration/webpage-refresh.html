@@ -14,6 +14,7 @@
 <body>
 
 <div id="container">
+  <div class="blocker"></div>
   <iframe id="webpage-frame"
           frameborder="0"
           allowTransparency="true"></iframe>
@@ -29,6 +30,7 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
 <script src="../../src/components/widget-common/dist/config.js"></script>
+<script src="../../src/components/widget-common/dist/common.js"></script>
 <script src="../../src/widget/webpage.js"></script>
 <script src="../../src/components/widget-common/dist/message.js"></script>
 
@@ -54,8 +56,32 @@
       clock.restore();
     });
 
-    test("Should refresh the page after 1 minute", function () {
-      //TODO: revisit this, tried several ways to do a test but couldn't get it to work
+    suiteSetup(function (done) {
+      var frame = document.getElementById("webpage-frame"),
+        handler = function () {
+          frame.removeEventListener("load", handler);
+          done();
+        };
+
+      frame.addEventListener("load", handler);
+    });
+
+    test("Should check if internet connection exists and refresh page with good connection", function (done) {
+      var spy = sinon.spy(RiseVision.Common.Utilities, "hasInternetConnection"),
+        frame = document.getElementById("webpage-frame"),
+        handler = function () {
+          frame.removeEventListener("load", handler);
+
+          assert(spy.calledOnce);
+
+          RiseVision.Common.Utilities.hasInternetConnection.restore();
+
+          done();
+        };
+
+      frame.addEventListener("load", handler);
+
+      clock.tick(60000);
     });
 
   });
