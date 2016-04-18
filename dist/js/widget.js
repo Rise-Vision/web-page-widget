@@ -688,6 +688,9 @@ RiseVision.WebPage = (function (document, gadgets) {
     _message = new RiseVision.Common.Message(document.getElementById("container"),
       document.getElementById("messageContainer"));
 
+    // apply height value to message container so a message gets vertically centered
+    document.getElementById("messageContainer").style.height = _prefs.getInt("rsH") + "px";
+
     // Configure the value for _url
     _url = _additionalParams.url;
 
