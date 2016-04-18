@@ -15,7 +15,7 @@
 
 <div id="container">
   <div class="blocker"></div>
-  <iframe id="webpage-frame"
+  <iframe class="webpage-frame"
           frameborder="0"
           allowTransparency="true"></iframe>
 </div>
@@ -51,20 +51,14 @@
       server.restore();
     });
 
-    suite("Initialization", function () {
-      test("should not set container visibility to 'visible' until iframe source loaded", function () {
-        assert.notEqual(document.getElementById("container").style.visibility, "visible");
-      });
-    });
-
     suite("iframe fixed attributes", function () {
 
       test("should set frame border to 0", function() {
-        assert.equal(document.getElementById("webpage-frame").getAttribute("frameBorder"), "0");
+        assert.equal(document.querySelector(".webpage-frame").getAttribute("frameBorder"), "0");
       });
 
       test("should allow transparency", function () {
-        assert.equal(document.getElementById("webpage-frame").getAttribute("allowTransparency"), "true");
+        assert.equal(document.querySelector(".webpage-frame").getAttribute("allowTransparency"), "true");
       });
 
     });
@@ -87,21 +81,23 @@
 
     suite("Region", function () {
       test("should apply negative top and left margins to iframe", function () {
-        assert.equal(document.getElementById("webpage-frame").style.margin, "-20px 0px 0px -10px");
+        assert.equal(document.querySelector(".webpage-frame").style.margin, "-20px 0px 0px -10px");
       });
     });
 
     suite("iframe scale", function () {
 
       test("should set scale to 75%", function() {
-        assert.equal(document.getElementById("webpage-frame").style.webkitTransform, "scale(0.75)");
-        assert.equal(document.getElementById("webpage-frame").style.transform, "scale(0.75)");
+        assert.equal(document.querySelector(".webpage-frame").style.webkitTransform, "scale(0.75)",
+          "webkitTransform");
+        assert.equal(document.querySelector(".webpage-frame").style.transform, "scale(0.75)",
+          "transform");
       });
 
       test("should set width and height for a scale of 75%", function() {
         var value = "133.333%";
-        assert.equal(document.getElementById("webpage-frame").style.width, value);
-        assert.equal(document.getElementById("webpage-frame").style.height, value);
+        assert.equal(document.querySelector(".webpage-frame").style.width, value, "width");
+        assert.equal(document.querySelector(".webpage-frame").style.height, value, "height");
       });
 
     });
@@ -109,24 +105,7 @@
     suite("Loading webpage", function () {
 
       test("should set src attribute with url value", function () {
-        assert.equal(document.getElementById("webpage-frame").getAttribute("src"), "http://www.risevision.com");
-      });
-
-      test("should set container visible once page has loaded", function (done) {
-        this.timeout = 20000;
-
-        function check() {
-          if (document.getElementById("container").style.visibility === "visible") {
-            done();
-          }
-          else {
-            setTimeout(function () {
-              check();
-            },1000);
-          }
-        }
-
-        check();
+        assert.equal(document.querySelector(".webpage-frame").getAttribute("src"), "http://www.risevision.com");
       });
 
     });
@@ -138,7 +117,7 @@
       });
 
       test("should not display scrollbars", function () {
-        assert.equal(document.getElementById("webpage-frame").getAttribute("scrolling"), "no");
+        assert.equal(document.querySelector(".webpage-frame").getAttribute("scrolling"), "no");
       });
 
     });
@@ -150,7 +129,7 @@
       });
 
       test("should unload iframe", function () {
-        assert.equal(document.getElementById("webpage-frame").getAttribute("src"), "about:blank");
+        assert.equal(document.querySelector(".webpage-frame").getAttribute("src"), "about:blank");
       });
 
     });

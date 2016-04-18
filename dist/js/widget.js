@@ -527,9 +527,8 @@ RiseVision.WebPage = (function (document, gadgets) {
     request.send();
   }
 
-  function _setInteractivity() {
-    var frame = document.getElementById("webpage-frame"),
-      blocker = document.querySelector(".blocker");
+  function _setInteractivity(frame) {
+    var blocker = document.querySelector(".blocker");
 
     blocker.style.display = (_additionalParams.interactivity.interactive) ? "none" : "block";
 
@@ -539,14 +538,11 @@ RiseVision.WebPage = (function (document, gadgets) {
 
   function _configurePage() {
     var container = document.getElementById("container"),
-      frame = document.getElementById("webpage-frame"),
+      frame = document.querySelector(".webpage-frame"),
       aspectRatio =  (_prefs.getInt("rsH") / _prefs.getInt("rsW")) * 100;
 
     if (container && frame) {
-      // Hiding iframe container, visible when the iframe successfully loads
-      container.style.visibility = "hidden";
-
-      _setInteractivity();
+      _setInteractivity(frame);
       _setRegion(frame);
       _setZoom(frame);
 
@@ -561,7 +557,8 @@ RiseVision.WebPage = (function (document, gadgets) {
 
   function _setZoom(frame) {
    var zoom = parseFloat(_additionalParams.zoom),
-     zoomStyle;
+    currentStyle = "",
+     zoomStyle = "";
 
     // Configure the zoom (scale) styling
     zoomStyle = "-ms-zoom:" + zoom + ";" +
@@ -574,10 +571,10 @@ RiseVision.WebPage = (function (document, gadgets) {
       "transform: scale(" + zoom + ");" +
       "transform-origin: 0 0;";
 
+    currentStyle = frame.getAttribute("style");
     zoomStyle += "width: " + ((1 / zoom) * 100) + "%;" +
       "height: " + ((1 / zoom) * 100) + "%;";
 
-    var currentStyle = frame.getAttribute("style");
     if (currentStyle) {
       zoomStyle = currentStyle + zoomStyle;
     }
@@ -586,7 +583,8 @@ RiseVision.WebPage = (function (document, gadgets) {
   }
 
   function _setRegion(frame) {
-    var marginStyle = "",
+    var currentStyle = "",
+      marginStyle = "",
       horizontal = 0;
 
     if (_additionalParams.region && _additionalParams.region.showRegion &&
@@ -601,9 +599,9 @@ RiseVision.WebPage = (function (document, gadgets) {
 
       // Apply negative margins in order to show a region.
       if ((horizontal !== 0) || (_vertical !== 0)) {
+        currentStyle = frame.getAttribute("style");
         marginStyle = "margin: " + "-" + _vertical + "px 0 0 -" + horizontal + "px;";
 
-        var currentStyle = frame.getAttribute("style");
         if (currentStyle) {
           marginStyle = currentStyle + marginStyle;
         }
@@ -617,35 +615,64 @@ RiseVision.WebPage = (function (document, gadgets) {
     _intervalId = setInterval(function () {
       _utils.hasInternetConnection("img/transparent.png", function (hasInternet) {
         if (hasInternet) {
-          _loadFrame();
+          _refreshFrame();
         }
       });
     }, _additionalParams.refresh);
   }
 
+  function _getFrameElement() {
+    var container = document.getElementById("container"),
+      frame = document.createElement("iframe");
+
+    frame.className = "webpage-frame";
+    frame.style.visibility = "hidden";
+    frame.setAttribute("frameborder", "0");
+    frame.setAttribute("allowTransparency", "true");
+
+    _setInteractivity(frame);
+    _setRegion(frame);
+    _setZoom(frame);
+
+    frame.onload = function () {
+      this.onload = null;
+      this.style.visibility = "visible";
+
+      // Remove old iframe.
+      container.removeChild(document.querySelector(".webpage-frame"));
+    };
+
+    frame.setAttribute("src", _url);
+
+    return frame;
+  }
+
   function _loadFrame() {
-    var frame = document.getElementById("webpage-frame"),
-      container = document.getElementById("container");
+    var frame = document.querySelector(".webpage-frame");
 
-    if (container && frame) {
-      frame.onload = function () {
-        frame.onload = null;
+    frame.onload = function () {
+      this.onload = null;
 
-        // Show the iframe container
-        container.style.visibility = "visible";
+      // check if refresh interval should be started
+      if (_additionalParams.refresh > 0 && _intervalId === null) {
+        _startRefreshInterval();
+      }
+    };
 
-        // check if refresh interval should be started
-        if (_additionalParams.refresh > 0 && _intervalId === null) {
-          _startRefreshInterval();
-        }
-      };
+    frame.setAttribute("src", _url);
+  }
 
-      frame.setAttribute("src", _url);
-    }
+  function _refreshFrame() {
+    var container = document.getElementById("container"),
+      fragment = document.createDocumentFragment(),
+      frame = _getFrameElement();
+
+    fragment.appendChild(frame);
+    container.appendChild(fragment);
   }
 
   function _unloadFrame() {
-    var frame = document.getElementById("webpage-frame");
+    var frame = document.querySelector(".webpage-frame");
 
     if (_additionalParams.refresh > 0) {
       clearInterval(_intervalId);
