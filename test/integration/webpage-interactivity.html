@@ -15,7 +15,7 @@
 
 <div id="container">
   <div class="blocker"></div>
-  <iframe id="webpage-frame"
+  <iframe class="webpage-frame"
           frameborder="0"
           allowTransparency="true"></iframe>
 </div>
@@ -56,7 +56,7 @@
     });
 
     test("should display scrollbars", function () {
-      assert.equal(document.getElementById("webpage-frame").getAttribute("scrolling"), "yes");
+      assert.equal(document.querySelector(".webpage-frame").getAttribute("scrolling"), "yes");
     });
 
   });

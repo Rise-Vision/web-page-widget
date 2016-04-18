@@ -15,7 +15,7 @@
 
 <div id="container">
   <div class="blocker"></div>
-  <iframe id="webpage-frame"
+  <iframe class="webpage-frame"
           frameborder="0"
           allowTransparency="true"></iframe>
 </div>
@@ -36,14 +36,12 @@
 
 <script>
 
-  var paramsStub, server, clock;
+  var paramsStub, server, clock, tempFrame;
 
   paramsStub = sinon.stub(RiseVision.WebPage, "setAdditionalParams", function (names) {
     server = sinon.fakeServer.create();
     server.respondImmediately = true;
     server.respondWith("Page Content");
-
-    clock = sinon.useFakeTimers();
 
     paramsStub.restore();
     RiseVision.WebPage.setAdditionalParams(names);
@@ -56,32 +54,76 @@
       clock.restore();
     });
 
-    suiteSetup(function (done) {
-      var frame = document.getElementById("webpage-frame"),
-        handler = function () {
-          frame.removeEventListener("load", handler);
-          done();
-        };
-
-      frame.addEventListener("load", handler);
-    });
-
     test("Should check if internet connection exists and refresh page with good connection", function (done) {
       var spy = sinon.spy(RiseVision.Common.Utilities, "hasInternetConnection"),
-        frame = document.getElementById("webpage-frame"),
-        handler = function () {
-          frame.removeEventListener("load", handler);
+        frame = document.querySelector(".webpage-frame"),
+        onload = frame.onload;
 
-          assert(spy.calledOnce);
+      frame.onload = function() {
+        clock = sinon.useFakeTimers();
 
-          RiseVision.Common.Utilities.hasInternetConnection.restore();
+        onload.call(this);
+        clock.tick(60000);
 
-          done();
-        };
+        assert(spy.calledOnce);
 
-      frame.addEventListener("load", handler);
+        RiseVision.Common.Utilities.hasInternetConnection.restore();
 
-      clock.tick(60000);
+        done();
+      };
+    });
+
+    test("Should add a second iframe on a refresh", function () {
+      assert.equal(document.querySelectorAll(".webpage-frame").length, 2);
+    });
+
+    test("should set frame border to 0", function() {
+      tempFrame = document.querySelectorAll(".webpage-frame")[1];
+
+      assert.equal(tempFrame.getAttribute("frameBorder"), "0");
+    });
+
+    test("should allow transparency", function () {
+      assert.equal(tempFrame.getAttribute("allowTransparency"), "true");
+    });
+
+    test("should be invisible", function() {
+      assert.equal(tempFrame.style.visibility, "hidden");
+    });
+
+    test("should apply negative top and left margins to iframe", function () {
+      assert.equal(tempFrame.style.margin, "-20px 0px 0px -10px");
+    });
+
+    test("should set scale to 75%", function() {
+      assert.equal(tempFrame.style.webkitTransform, "scale(0.75)", "webkitTransform");
+      assert.equal(tempFrame.style.transform, "scale(0.75)", "transform");
+    });
+
+    test("should set width and height for a scale of 75%", function() {
+      var value = "133.333%";
+
+      assert.equal(tempFrame.style.width, value, "width");
+      assert.equal(tempFrame.style.height, value, "height");
+    });
+
+    test("should set src attribute with url value", function () {
+      assert.equal(tempFrame.getAttribute("src"), "http://www.risevision.com");
+    });
+
+    test("should show second iframe", function(done) {
+      var onload = tempFrame.onload;
+
+      tempFrame.onload = function() {
+        onload.call(this);
+
+        assert.equal(tempFrame.style.visibility, "visible");
+        done();
+      }
+    });
+
+    test("should remove first iframe", function() {
+      assert.equal(document.querySelectorAll(".webpage-frame").length, 1);
     });
 
   });

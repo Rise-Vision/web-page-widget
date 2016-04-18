@@ -11,12 +11,12 @@
       },
       "refresh": 60000, // 1 minute
       "region": {
-        "showRegion": "page",
-        "horizontal": 0,
-        "vertical": 0
+        showRegion: "region",
+        horizontal: 10,
+        vertical: 20
       },
       "url": "http://www.risevision.com",
-      "zoom": "1"
+      "zoom": "0.75"
     }
   };
 })(window);
