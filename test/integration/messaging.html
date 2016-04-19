@@ -49,6 +49,16 @@
       server.restore();
     });
 
+    suite("Initialization", function () {
+
+      test("should apply height to message container so message gets vertically centered", function () {
+        var prefs = new gadgets.Prefs();
+
+        assert.equal(document.getElementById("messageContainer").style.height, prefs.getInt("rsH") + "px");
+      });
+
+    });
+
     suite("Same Origin Header", function() {
       test("should show message that web page can't be displayed", function() {
         assert.equal(document.querySelector(".message").innerHTML, "The owner of the Web Page at " +
