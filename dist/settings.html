@@ -45,7 +45,7 @@
             <!-- URL -->
             <div class="form-group">
               <url-field id="pageUrl" name="pageUrl" url="settings.additionalParams.url" hide-storage="hide"
-                         ng-model="urlentry" valid></url-field>
+                         ng-model="urlentry" valid url-input init-empty></url-field>
               <p ng-if="!noXFrameOptions" class="text-danger">{{ "widget-web-page.warning.message" | translate }} <a ng-href="https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options" target="_blank">{{ "widget-web-page.warning.anchor" | translate}}</a>.</p>
             </div>
 

@@ -3,6 +3,7 @@ angular.module("risevision.widget.web-page.settings")
     function ($scope, $log, xframeOptions) {
 
       $scope.noXFrameOptions = true;
+      $scope.urlInput = false;
 
       $scope.validateXFrame = function() {
         xframeOptions.hasOptions($scope.settings.additionalParams.url).then(function(value){
@@ -16,8 +17,16 @@ angular.module("risevision.widget.web-page.settings")
         }
       });
 
+      $scope.$watch("urlInput", function (value) {
+        if (typeof value !== "undefined") {
+          $scope.settingsForm.pageUrl.$setValidity("urlInput", value);
+        }
+      });
+
       $scope.$watch("settings.additionalParams.url", function (newVal, oldVal) {
         if (typeof oldVal === "undefined" && newVal && newVal !== "") {
+          $scope.urlInput = true;
+
           // previously saved settings are being shown, ensure to check if page has X-Frame-Options
           if ($scope.settingsForm.pageUrl.$valid) {
             $scope.validateXFrame();
@@ -27,6 +36,10 @@ angular.module("risevision.widget.web-page.settings")
           if (typeof newVal !== "undefined") {
             // ensure warning message doesn't get shown while url field is receiving input
             $scope.noXFrameOptions = true;
+
+            if (newVal !== "") {
+              $scope.urlInput = true;
+            }
           }
         }
 
