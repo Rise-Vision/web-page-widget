@@ -15,6 +15,7 @@
         "horizontal": 10,
         "vertical": 20
       },
+      "unload": true,
       "url": "http://www.risevision.com",
       "zoom": "0.75"
     }

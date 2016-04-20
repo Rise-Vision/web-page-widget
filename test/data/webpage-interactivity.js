@@ -15,6 +15,7 @@
         "horizontal": 0,
         "vertical": 0
       },
+      "unload": true,
       "url": "http://www.risevision.com"
     }
   };
