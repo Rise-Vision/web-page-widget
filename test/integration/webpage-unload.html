@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Web Page Widget</title>
+
+  <link rel="stylesheet" type="text/css" href="../../src/widget/css/webpage.css">
+  <link rel="stylesheet" href="../../src/components/widget-common/dist/css/message.css">
+
+  <script src="../../src/components/web-component-tester/browser.js"></script>
+
+</head>
+<body>
+
+<div id="container">
+  <div class="blocker"></div>
+  <iframe class="webpage-frame"
+          frameborder="0"
+          allowTransparency="true"></iframe>
+</div>
+
+<div id="messageContainer"></div>
+
+<script src="../data/webpage-unload.js"></script>
+
+<script src="../../node_modules/widget-tester/mocks/gadget-mocks.js"></script>
+<script src="../../node_modules/widget-tester/mocks/logger-mock.js"></script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+<script src="../../src/components/widget-common/dist/config.js"></script>
+<script src="../../src/components/widget-common/dist/common.js"></script>
+<script src="../../src/widget/webpage.js"></script>
+<script src="../../src/components/widget-common/dist/message.js"></script>
+
+<script>
+  var paramsStub, server;
+
+  paramsStub = sinon.stub(RiseVision.WebPage, "setAdditionalParams", function (names) {
+    server = sinon.fakeServer.create();
+    server.respondImmediately = true;
+    server.respondWith("Page Content");
+
+    paramsStub.restore();
+    RiseVision.WebPage.setAdditionalParams(names);
+  });
+
+  suite("Unload", function() {
+
+    suiteTeardown(function() {
+      server.restore();
+    });
+
+    suite("Loading webpage", function () {
+
+      test("should set src attribute with url value", function (done) {
+        var frame = document.querySelector(".webpage-frame"),
+          onload = frame.onload;
+
+        frame.onload = function() {
+          onload.call(this);
+          done();
+        };
+
+        assert.equal(document.querySelector(".webpage-frame").getAttribute("src"), "http://www.risevision.com");
+      });
+
+    });
+
+    suite("Pause/Stop", function () {
+
+      suiteSetup(function () {
+        RiseVision.WebPage.pause();
+      });
+
+      test("should not unload iframe", function () {
+        assert.equal(document.querySelector(".webpage-frame").getAttribute("src"), "http://www.risevision.com");
+      });
+
+    });
+
+    suite("Play", function () {
+
+      test("should not try to reload iframe", function () {
+        var frame = document.querySelector(".webpage-frame"),
+          spy = sinon.spy(frame, "setAttribute");
+
+        RiseVision.WebPage.play();
+
+        assert.isFalse(spy.calledOnce);
+      });
+
+    });
+
+  });
+</script>
+
+<script src="../../src/widget/main.js"></script>
+</body>
+</html>

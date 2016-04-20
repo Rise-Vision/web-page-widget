@@ -69,6 +69,10 @@
         expect(element(by.model("settings.additionalParams.refresh")).getAttribute("value")).to.eventually.equal("0");
       });
 
+      it("Should select 'Unload Web Page'", function () {
+        expect(element(by.model("settings.additionalParams.unload")).isSelected()).to.eventually.be.true;
+      });
+
       it("Should not select 'Allow Interaction'", function () {
         expect(element(by.model("settings.additionalParams.interactivity.interactive")).isSelected()).to.eventually.be.false;
       });
@@ -198,6 +202,7 @@
               horizontal: 0,
               vertical: 0
             },
+            unload: true,
             url: validUrl,
             zoom: 1
           }

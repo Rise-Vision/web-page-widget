@@ -9,15 +9,15 @@
         "interactive": false,
         "scrollbars": false
       },
-      "refresh": 60000, // 1 minute
+      "refresh": 0,
       "region": {
-        showRegion: "region",
-        horizontal: 10,
-        vertical: 20
+        "showRegion": "page",
+        "horizontal": 0,
+        "vertical": 0
       },
-      "unload": true,
+      "unload": false,
       "url": "http://www.risevision.com",
-      "zoom": "0.75"
+      "zoom": "1"
     }
   };
 })(window);

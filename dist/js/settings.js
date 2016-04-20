@@ -11099,6 +11099,7 @@ angular.module("risevision.widget.web-page.settings")
         horizontal: 0,
         vertical: 0
       },
+      unload: true,
       url: "",
       zoom: 1
     }
