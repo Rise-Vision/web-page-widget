@@ -57,6 +57,10 @@
         expect(element(by.css("#pageUrl + p.text-danger")).isPresent()).to.eventually.be.false;
       });
 
+      it("Should not show warning message regarding invalid url", function () {
+        expect(element(by.css("#pageUrl p.text-danger")).isPresent()).to.eventually.be.false;
+      });
+
       it("Should select 'Show Entire Page'", function () {
         expect(element(by.css("input[type='radio'][value='page']")).isSelected()).to.eventually.be.true;
       });
@@ -136,7 +140,7 @@
 
     });
 
-    describe("Warning message", function() {
+    describe("X-Frame-Options warning message", function() {
       it("should not show warning when URL Field is receiving input", function() {
         element(by.css("#pageUrl input[name='url']")).sendKeys("http://test");
 
