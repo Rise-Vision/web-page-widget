@@ -50,7 +50,7 @@
             </div>
 
             <!-- Refresh -->
-            <div class="form-group  ">
+            <div class="form-group">
               <label class="control-label" for="refresh">{{"widget-web-page.refresh.label" | translate}}</label>
               <div class="row">
                 <div class="col-sm-4">
@@ -62,6 +62,15 @@
                     <option value="3600000">60 {{"common.units.minutes" | translate}}</option>
                   </select>
                 </div>
+              </div>
+            </div>
+
+            <!-- Unload -->
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input name="audio" type="checkbox" ng-model="settings.additionalParams.unload"> {{ "widget-web-page.unload.label" | translate}}
+                </label>
               </div>
             </div>
 
@@ -122,10 +131,10 @@
             <!-- End Region -->
 
             <hr>
-            
+
             <!-- Zoom -->
+            <h4>{{ "widget-web-page.zoom.heading" | translate}}</h4>
             <div class="form-group">
-              <label class="control-label">{{ "widget-web-page.zoom.heading" | translate }}</label>
               <div class="row">
                 <div class="col-sm-4">
                   <select id="zoom" name="zoom" class="form-control" ng-model="settings.additionalParams.zoom">

@@ -482,7 +482,8 @@ RiseVision.WebPage = (function (document, gadgets) {
     _additionalParams = null,
     _url = "",
     _vertical = 0,
-    _intervalId = null;
+    _intervalId = null,
+    _initialLoad = true;
 
   var _message = null;
 
@@ -653,6 +654,8 @@ RiseVision.WebPage = (function (document, gadgets) {
     frame.onload = function () {
       this.onload = null;
 
+      _initialLoad = false;
+
       // check if refresh interval should be started
       if (_additionalParams.refresh > 0 && _intervalId === null) {
         _startRefreshInterval();
@@ -720,11 +723,15 @@ RiseVision.WebPage = (function (document, gadgets) {
   }
 
   function pause() {
-    _unloadFrame();
+    if (_additionalParams.unload) {
+      _unloadFrame();
+    }
   }
 
   function play() {
-    _loadFrame();
+    if (_initialLoad || _additionalParams.unload) {
+      _loadFrame();
+    }
   }
 
   function stop() {
