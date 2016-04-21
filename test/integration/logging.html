@@ -36,7 +36,9 @@
   var paramsStub, spy, server;
 
   paramsStub = sinon.stub(RiseVision.WebPage, "setAdditionalParams", function (names) {
+
     spy = sinon.spy(RiseVision.Common.LoggerUtils, "logEvent");
+
     server = sinon.fakeServer.create();
     server.respondImmediately = true;
     server.respondWith([200, { "X-Frame-Options": "SAMEORIGIN" }, "Page Content"]);
@@ -58,8 +60,15 @@
       server.restore();
     });
 
-    teardown(function() {
-      RiseVision.Common.LoggerUtils.logEvent.restore();
+    setup(function() {
+    });
+
+    suite("play", function() {
+      test("should log the play event", function() {
+        params.event = "play";
+        assert(spy.calledTwice);
+        assert(spy.calledWith(table, params));
+      });
     });
 
     suite("Same Origin Header", function() {
@@ -68,10 +77,11 @@
         params.event_details = "X-Frame-Options header";
         params.error_details = "SAMEORIGIN";
 
-        assert(spy.calledOnce);
+        assert(spy.calledTwice);
         assert(spy.calledWith(table, params));
       });
     });
+
   });
 </script>
 

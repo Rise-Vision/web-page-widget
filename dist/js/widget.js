@@ -729,6 +729,9 @@ RiseVision.WebPage = (function (document, gadgets) {
   }
 
   function play() {
+
+    logEvent({ "event": "play", "url": _url });
+
     if (_initialLoad || _additionalParams.unload) {
       _loadFrame();
     }
