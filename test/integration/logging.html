@@ -14,6 +14,7 @@
 <body>
 
 <div id="container">
+  <div class="blocker"></div>
   <iframe class="webpage-frame"
           frameborder="0"
           allowTransparency="true"></iframe>
@@ -33,15 +34,11 @@
 <script src="../../src/components/widget-common/dist/message.js"></script>
 
 <script>
-  var paramsStub, spy, server;
+  var paramsStub, spy;
 
   paramsStub = sinon.stub(RiseVision.WebPage, "setAdditionalParams", function (names) {
 
     spy = sinon.spy(RiseVision.Common.LoggerUtils, "logEvent");
-
-    server = sinon.fakeServer.create();
-    server.respondImmediately = true;
-    server.respondWith([200, { "X-Frame-Options": "SAMEORIGIN" }, "Page Content"]);
 
     paramsStub.restore();
     RiseVision.WebPage.setAdditionalParams(names);
@@ -57,7 +54,6 @@
 
     suiteTeardown(function() {
       spy.restore();
-      server.restore();
     });
 
     setup(function() {
@@ -66,18 +62,7 @@
     suite("play", function() {
       test("should log the play event", function() {
         params.event = "play";
-        assert(spy.calledTwice);
-        assert(spy.calledWith(table, params));
-      });
-    });
-
-    suite("Same Origin Header", function() {
-      test("should log 'X-Frame-Options header' error", function() {
-        params.event = "error";
-        params.event_details = "X-Frame-Options header";
-        params.error_details = "SAMEORIGIN";
-
-        assert(spy.calledTwice);
+        assert(spy.calledOnce);
         assert(spy.calledWith(table, params));
       });
     });

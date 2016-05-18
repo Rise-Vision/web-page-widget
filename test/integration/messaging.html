@@ -14,6 +14,7 @@
 <body>
 
 <div id="container">
+  <div class="blocker"></div>
   <iframe class="webpage-frame"
           frameborder="0"
           allowTransparency="true"></iframe>
@@ -33,22 +34,7 @@
 <script src="../../src/components/widget-common/dist/message.js"></script>
 
 <script>
-  var paramsStub, server;
-
-  paramsStub = sinon.stub(RiseVision.WebPage, "setAdditionalParams", function (names) {
-    server = sinon.fakeServer.create();
-    server.respondImmediately = true;
-    server.respondWith([200, { "X-Frame-Options": "SAMEORIGIN" }, "Page Content"]);
-
-    paramsStub.restore();
-    RiseVision.WebPage.setAdditionalParams(names);
-  });
-
   suite("Messaging", function() {
-    suiteTeardown(function() {
-      server.restore();
-    });
-
     suite("Initialization", function () {
 
       test("should apply height to message container so message gets vertically centered", function () {
@@ -57,14 +43,6 @@
         assert.equal(document.getElementById("messageContainer").style.height, prefs.getInt("rsH") + "px");
       });
 
-    });
-
-    suite("Same Origin Header", function() {
-      test("should show message that web page can't be displayed", function() {
-        assert.equal(document.querySelector(".message").innerHTML, "The owner of the Web Page at " +
-          "the URL provided does not allow the Page to be embedded within an iFrame. If possible, " +
-          "please contact the Web Page owner to discuss X-Frame-Options.");
-      });
     });
   });
 </script>

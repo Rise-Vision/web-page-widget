@@ -26,39 +26,6 @@ RiseVision.WebPage = (function (document, gadgets) {
       true, true, true, true, false);
   }
 
-  function _validateUrl(cb) {
-    var proxyUrl = "https://proxy.risevision.com/" + _url,
-      request = new XMLHttpRequest();
-
-    function handleProxyResponse(e) {
-      var success = true,
-        header = e.target.getResponseHeader("X-Frame-Options");
-
-      if (header && (header.toUpperCase() === "SAMEORIGIN")) {
-        logEvent({
-          "event": "error",
-          "event_details": "X-Frame-Options header",
-          "error_details": "SAMEORIGIN",
-          "url": _url
-        });
-
-        _message.show("The owner of the Web Page at the URL provided does not allow the Page to " +
-          "be embedded within an iFrame. If possible, please contact the Web Page owner to " +
-          "discuss X-Frame-Options.");
-
-        success = false;
-      }
-
-      if (cb && (typeof cb === "function")) {
-        cb(success);
-      }
-    }
-
-    request.addEventListener("load", handleProxyResponse);
-    request.open("GET", proxyUrl);
-    request.send();
-  }
-
   function _setInteractivity(frame) {
     var blocker = document.querySelector(".blocker");
 
@@ -233,13 +200,8 @@ RiseVision.WebPage = (function (document, gadgets) {
       _url = "http://" + _url;
     }
 
-    _validateUrl(function(success) {
-      if (success) {
-        _configurePage();
-      }
-
-      _ready();
-    });
+    _configurePage();
+    _ready();
   }
 
   /*

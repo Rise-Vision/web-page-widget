@@ -33,23 +33,11 @@
 <script src="../../src/components/widget-common/dist/common.js"></script>
 <script src="../../src/widget/webpage.js"></script>
 <script src="../../src/components/widget-common/dist/message.js"></script>
+<script src="../../src/widget/main.js"></script>
 
 <script>
-  var paramsStub, server;
-
-  paramsStub = sinon.stub(RiseVision.WebPage, "setAdditionalParams", function (names) {
-    server = sinon.fakeServer.create();
-    server.respondImmediately = true;
-    server.respondWith("Page Content");
-
-    paramsStub.restore();
-    RiseVision.WebPage.setAdditionalParams(names);
-  });
 
   suite("Web Page", function() {
-    suiteTeardown(function() {
-      server.restore();
-    });
 
     suite("iframe fixed attributes", function () {
 
@@ -136,7 +124,5 @@
 
   });
 </script>
-
-<script src="../../src/widget/main.js"></script>
 </body>
 </html>
