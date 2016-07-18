@@ -15,9 +15,6 @@
 
 <div id="container">
   <div class="blocker"></div>
-  <iframe class="webpage-frame"
-          frameborder="0"
-          allowTransparency="true"></iframe>
 </div>
 
 <div id="messageContainer"></div>
@@ -74,7 +71,7 @@
         RiseVision.WebPage.pause();
       });
 
-      test("should not unload iframe", function () {
+      test("should not destroy iframe", function () {
         assert.equal(document.querySelector(".webpage-frame").getAttribute("src"), "http://www.risevision.com");
       });
 
