@@ -504,16 +504,11 @@ RiseVision.WebPage = (function (document, gadgets) {
       (_additionalParams.interactivity.interactive && _additionalParams.interactivity.scrollbars) ? "yes" : "no");
   }
 
-  function _configurePage() {
+  function _setAspectRatio() {
     var container = document.getElementById("container"),
-      frame = document.querySelector(".webpage-frame"),
       aspectRatio =  (_prefs.getInt("rsH") / _prefs.getInt("rsW")) * 100;
 
-    if (container && frame) {
-      _setInteractivity(frame);
-      _setRegion(frame);
-      _setZoom(frame);
-
+    if (container) {
       // implement responsive iframe
       if (_vertical !== 0) {
         aspectRatio += (_vertical / _prefs.getInt("rsW")) * 100;
@@ -583,43 +578,30 @@ RiseVision.WebPage = (function (document, gadgets) {
     _intervalId = setInterval(function () {
       _utils.hasInternetConnection("img/transparent.png", function (hasInternet) {
         if (hasInternet) {
-          _refreshFrame();
+          _loadFrame();
         }
       });
     }, _additionalParams.refresh);
   }
 
   function _getFrameElement() {
-    var container = document.getElementById("container"),
-      frame = document.createElement("iframe");
+    var frame = document.createElement("iframe"),
+      container = document.getElementById("container");
 
     frame.className = "webpage-frame";
     frame.style.visibility = "hidden";
     frame.setAttribute("frameborder", "0");
     frame.setAttribute("allowTransparency", "true");
+    frame.setAttribute("sandbox", "allow-forms allow-same-origin allow-scripts");
 
     _setInteractivity(frame);
     _setRegion(frame);
     _setZoom(frame);
+    _setAspectRatio();
 
     frame.onload = function () {
       this.onload = null;
       this.style.visibility = "visible";
-
-      // Remove old iframe.
-      container.removeChild(document.querySelector(".webpage-frame"));
-    };
-
-    frame.setAttribute("src", _url);
-
-    return frame;
-  }
-
-  function _loadFrame() {
-    var frame = document.querySelector(".webpage-frame");
-
-    frame.onload = function () {
-      this.onload = null;
 
       _initialLoad = false;
 
@@ -627,29 +609,38 @@ RiseVision.WebPage = (function (document, gadgets) {
       if (_additionalParams.refresh > 0 && _intervalId === null) {
         _startRefreshInterval();
       }
+
+      if (document.querySelectorAll(".webpage-frame").length > 1) {
+        // Refresh occurred, remove old iframe
+        container.removeChild(document.querySelector(".webpage-frame"));
+      }
     };
 
-    frame.setAttribute("src", _url);
+    return frame;
   }
 
-  function _refreshFrame() {
+  function _loadFrame() {
     var container = document.getElementById("container"),
       fragment = document.createDocumentFragment(),
       frame = _getFrameElement();
+
+    frame.setAttribute("src", _url);
 
     fragment.appendChild(frame);
     container.appendChild(fragment);
   }
 
   function _unloadFrame() {
-    var frame = document.querySelector(".webpage-frame");
+    var container = document.getElementById("container"),
+      frame = document.querySelector(".webpage-frame");
 
     if (_additionalParams.refresh > 0) {
       clearInterval(_intervalId);
+      _intervalId = null;
     }
 
     if (frame) {
-      frame.src = "about:blank";
+      container.removeChild(frame);
     }
 
   }
@@ -669,7 +660,6 @@ RiseVision.WebPage = (function (document, gadgets) {
       _url = "http://" + _url;
     }
 
-    _configurePage();
     _ready();
   }
 
