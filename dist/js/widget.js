@@ -483,7 +483,9 @@ RiseVision.WebPage = (function (document, gadgets) {
     _url = "",
     _vertical = 0,
     _intervalId = null,
-    _initialLoad = true;
+    _initialLoad = true,
+    _widthOffset = 0,
+    _heightOffset =0;
 
   var _message = null;
 
@@ -535,8 +537,8 @@ RiseVision.WebPage = (function (document, gadgets) {
       "transform-origin: 0 0;";
 
     currentStyle = frame.getAttribute("style");
-    zoomStyle += "width: " + ((1 / zoom) * 100) + "%;" +
-      "height: " + ((1 / zoom) * 100) + "%;";
+    zoomStyle += "width: " + (((1 / zoom) * 100) + _widthOffset) + "%;" +
+      "height: " + (((1 / zoom) * 100) + _heightOffset) + "%;";
 
     if (currentStyle) {
       zoomStyle = currentStyle + zoomStyle;
@@ -562,6 +564,10 @@ RiseVision.WebPage = (function (document, gadgets) {
 
       // Apply negative margins in order to show a region.
       if ((horizontal !== 0) || (_vertical !== 0)) {
+        //calculate the width and height offsets when region are chosen
+        _widthOffset =  (horizontal * 100)/_prefs.getInt("rsW");
+        _heightOffset = (_vertical * 100)/_prefs.getInt("rsH");
+
         currentStyle = frame.getAttribute("style");
         marginStyle = "margin: " + "-" + _vertical + "px 0 0 -" + horizontal + "px;";
 

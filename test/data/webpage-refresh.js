@@ -1,6 +1,9 @@
 (function(window) {
   "use strict";
 
+  window.innerWidth = 600;
+  window.innerHeight = 400;
+
   window.gadget = window.gadget || {};
   window.gadget.settings = {
     "params": {},
@@ -20,4 +23,6 @@
       "zoom": "0.75"
     }
   };
+
+
 })(window);
