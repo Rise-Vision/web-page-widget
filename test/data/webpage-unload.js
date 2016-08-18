@@ -1,5 +1,7 @@
 (function(window) {
   "use strict";
+  window.innerWidth = 600;
+  window.innerHeight = 400;
 
   window.gadget = window.gadget || {};
   window.gadget.settings = {
