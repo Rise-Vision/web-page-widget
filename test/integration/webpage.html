@@ -84,10 +84,8 @@
       });
 
       test("should set width and height for a scale of 75%", function() {
-        var width = "135%";
-        var height = "138.333%";
-        assert.equal(document.querySelector(".webpage-frame").style.width, width, "width");
-        assert.equal(document.querySelector(".webpage-frame").style.height, height, "height");
+        assert.equal(document.querySelector(".webpage-frame").style.width, "135%", "width");
+        assert.equal(document.querySelector(".webpage-frame").style.height, "133.333%", "height");
       });
 
     });

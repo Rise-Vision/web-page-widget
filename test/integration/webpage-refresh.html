@@ -98,10 +98,8 @@
     });
 
     test("should set width and height for a scale of 75%", function() {
-      var width = "135%";
-      var height = "138.333%";
-      assert.equal(tempFrame.style.width, width, "width");
-      assert.equal(tempFrame.style.height, height, "height");
+      assert.equal(tempFrame.style.width, "135%", "width");
+      assert.equal(tempFrame.style.height, "133.333%", "height");
     });
 
     test("should set src attribute with url value", function () {
