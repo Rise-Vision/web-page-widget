@@ -177,6 +177,10 @@
     });
   });
 
+  gulp.task("build-dev", (cb) => {
+    runSequence(["clean", "config"], ["source", "fonts", "images", "i18n", "vendor"], ["unminify"], cb);
+  });
+
   gulp.task("build", (cb) => {
     runSequence(["clean", "config", "bower-update"], ["source", "fonts", "images", "i18n", "vendor"], ["unminify"], cb);
   });
