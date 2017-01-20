@@ -28,9 +28,7 @@ angular.module( "risevision.widget.web-page.settings" )
           $scope.urlInput = true;
 
           // previously saved settings are being shown, ensure to check if page has X-Frame-Options
-          if ( $scope.settingsForm.pageUrl.$valid ) {
-            $scope.validateXFrame();
-          }
+          $scope.validateXFrame();
         } else {
           if ( typeof newVal !== "undefined" ) {
             // ensure warning message doesn't get shown while url field is receiving input
