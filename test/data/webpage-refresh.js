@@ -1,4 +1,4 @@
-(function(window) {
+( function( window ) {
   "use strict";
 
   window.innerWidth = 600;
@@ -12,7 +12,7 @@
         "interactive": false,
         "scrollbars": false
       },
-      "refresh": 60000, // 1 minute
+      "refresh": 60000,
       "region": {
         showRegion: "region",
         horizontal: 10,
@@ -25,4 +25,4 @@
   };
 
 
-})(window);
+} )( window );

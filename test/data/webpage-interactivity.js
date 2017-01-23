@@ -1,4 +1,4 @@
-(function(window) {
+( function( window ) {
   "use strict";
   window.innerWidth = 600;
   window.innerHeight = 400;
@@ -21,4 +21,4 @@
       "url": "http://www.risevision.com"
     }
   };
-})(window);
+} )( window );

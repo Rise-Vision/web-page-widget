@@ -1,4 +1,4 @@
-(function(window) {
+( function( window ) {
   "use strict";
   window.innerWidth = 600;
   window.innerHeight = 400;
@@ -22,4 +22,4 @@
       "zoom": "1"
     }
   };
-})(window);
+} )( window );
