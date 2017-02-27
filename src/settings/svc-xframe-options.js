@@ -8,11 +8,13 @@ angular.module( "risevision.widget.web-page.settings" )
           method: "GET",
           url: "https://proxy.risevision.com/" + url
         } ).then( function( response ) {
+          var xframe;
 
           $log.debug( response.headers() );
 
           if ( response && response.headers() ) {
-            return response.headers( "X-Frame-Options" ) !== null;
+            xframe = response.headers( "X-Frame-Options" );
+            return xframe !== null && xframe.indexOf( "ALLOW-FROM" ) === -1;
           }
 
         }, function( response ) {

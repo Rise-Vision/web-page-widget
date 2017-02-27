@@ -150,7 +150,7 @@
         expect( element( by.css( "#pageUrl + p.text-danger" ) ).isPresent() ).to.eventually.be.false;
       } );
 
-      it( "should show warning message when a webpage with X-Frame-Options header is present", function() {
+      it( "should show warning message when a webpage with X-Frame-Options header is present and does not use ALLOW FROM", function() {
         element( by.css( "#pageUrl input[name='url']" ) ).sendKeys( "http://www.google.com" );
         // remove focus
         element( by.css( "h3.modal-title" ) ).click();
