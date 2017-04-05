@@ -14,8 +14,6 @@
   chai.use( chaiAsPromised );
   expect = chai.expect;
 
-  browser.driver.manage().window().setSize( 1024, 768 );
-
   describe( "Web Page Settings - e2e Testing", function() {
     var validUrl = "http://www.valid-url.com",
       invalidUrl = "http://w";
