@@ -3,6 +3,7 @@ angular.module( "risevision.widget.web-page.settings" )
     function( $scope, $log, xframeOptions ) {
 
       $scope.noXFrameOptions = true;
+      $scope.isPreviewUrl = false;
       $scope.urlInput = false;
 
       $scope.validateXFrame = function() {
