@@ -28,4 +28,39 @@ describe( "Web Page Settings", function() {
     expect( $scope.initialView ).to.be.truely;
   } );
 
+  describe( "isPreviewUrl", function() {
+
+    beforeEach( function() {
+      $scope.settingsForm = {
+        pageUrl: {
+          $setValidity: function() {
+            return;
+          }
+        }
+      };
+    } );
+
+    it( "should set isPreviewUrl to true if the selected URL contains preview.risevision.com", function() {
+      expect( $scope.isPreviewUrl ).to.be.false;
+
+      $scope.settings = defaultSettings;
+      $scope.settings.additionalParams.url = "http://preview.risevision.com/x";
+
+      $scope.$digest();
+
+      expect( $scope.isPreviewUrl ).to.be.true;
+    } );
+
+    it( "should set isPreviewUrl to false if the selected URL does not contain preview.risevision.com", function() {
+      expect( $scope.isPreviewUrl ).to.be.false;
+
+      $scope.settings = defaultSettings;
+      $scope.settings.additionalParams.url = "http://postview.risevision.com/x";
+
+      $scope.$digest();
+
+      expect( $scope.isPreviewUrl ).to.be.false;
+    } );
+  } );
+
 } );
