@@ -3,6 +3,7 @@ angular.module( "risevision.widget.web-page.settings" )
     function( $scope, $log, xframeOptions ) {
 
       $scope.noXFrameOptions = true;
+      $scope.isPreviewUrl = false;
       $scope.urlInput = false;
 
       $scope.validateXFrame = function() {
@@ -24,6 +25,8 @@ angular.module( "risevision.widget.web-page.settings" )
       } );
 
       $scope.$watch( "settings.additionalParams.url", function( newVal, oldVal ) {
+        $scope.isPreviewUrl = newVal && newVal.indexOf( "preview.risevision.com" ) > 0;
+
         if ( typeof oldVal === "undefined" && newVal && newVal !== "" ) {
           $scope.urlInput = true;
 
@@ -39,7 +42,6 @@ angular.module( "risevision.widget.web-page.settings" )
             }
           }
         }
-
       } );
 
       $scope.$watch( "settings.additionalParams.zoom", function( value ) {
