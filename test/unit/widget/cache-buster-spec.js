@@ -8,9 +8,9 @@ describe( "withCacheBusterAppended()", function() {
   var page = RiseVision.WebPage;
 
   it( "should append a cache buster parameter to an URL with no query string", function() {
-    var url = "https://localhost:8080/";
+    var url = "http://localhost:8080/";
 
-    expect( page.withCacheBusterAppended( url ) ).to.equal( url );
+    expect( page.withCacheBusterAppended( url ) ).to.match( /http:[/][/]localhost:8080[/]/ );
   } );
 
 } );
