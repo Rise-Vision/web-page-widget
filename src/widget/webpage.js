@@ -235,13 +235,18 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     _init();
   }
 
+  function withCacheBusterAppended( url ) {
+    return url;
+  }
+
   return {
     "getTableName": getTableName,
     "logEvent": logEvent,
     "setAdditionalParams": setAdditionalParams,
     "pause": pause,
     "play": play,
-    "stop": stop
+    "stop": stop,
+    "withCacheBusterAppended": withCacheBusterAppended
   };
 
 } )( document, gadgets );
