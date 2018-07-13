@@ -157,9 +157,10 @@ RiseVision.WebPage = ( function( document, gadgets ) {
   function _loadFrame() {
     var container = document.getElementById( "container" ),
       fragment = document.createDocumentFragment(),
-      frame = _getFrameElement();
+      frame = _getFrameElement(),
+      refreshUrl = _url;
 
-    frame.setAttribute( "src", _url );
+    frame.setAttribute( "src", refreshUrl );
 
     fragment.appendChild( frame );
     container.appendChild( fragment );
