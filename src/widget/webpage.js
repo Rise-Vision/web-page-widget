@@ -158,7 +158,7 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     var container = document.getElementById( "container" ),
       fragment = document.createDocumentFragment(),
       frame = _getFrameElement(),
-      refreshUrl = _url;
+      refreshUrl = _additionalParams.refresh > 0 ? withCacheBuster( _url ) : _url;
 
     frame.setAttribute( "src", refreshUrl );
 
@@ -235,7 +235,7 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     _init();
   }
 
-  function withCacheBusterAppended( url ) {
+  function withCacheBuster( url ) {
     var hashIndex = url.indexOf( "#" ),
       fragments = hashIndex < 0 ? [ url, "" ] : [
         url.substring( 0, hashIndex ), url.substring( hashIndex )
@@ -253,7 +253,7 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     "pause": pause,
     "play": play,
     "stop": stop,
-    "withCacheBusterAppended": withCacheBusterAppended
+    "withCacheBuster": withCacheBuster
   };
 
 } )( document, gadgets );

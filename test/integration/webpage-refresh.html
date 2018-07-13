@@ -103,7 +103,9 @@
     });
 
     test("should set src attribute with url value", function () {
-      assert.equal(tempFrame.getAttribute("src"), "http://www.risevision.com");
+      var regex = /http:[/][/]www[.]risevision[.]com[?]__cachebuster__=\d+/;
+
+      assert.match(tempFrame.getAttribute("src"), regex);
     });
 
     test("should show second iframe", function(done) {
