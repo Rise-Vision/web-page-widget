@@ -236,7 +236,10 @@ RiseVision.WebPage = ( function( document, gadgets ) {
   }
 
   function withCacheBusterAppended( url ) {
-    return url;
+    var separator = /[?&]/.test( url ) ? "&" : "?",
+      timestamp = ( new Date() ).getTime();
+
+    return url + separator + "__cachebuster__=" + timestamp;
   }
 
   return {

@@ -9,7 +9,7 @@ describe( "withCacheBusterAppended()", function() {
 
   it( "should append a cache buster parameter to an URL with no query string", function() {
     var url = "http://localhost:8080/",
-      regex = /http:[/][/]localhost:8080[/]/;
+      regex = /http:[/][/]localhost:8080[/][?]__cachebuster__=\d+/;
 
     expect( page.withCacheBusterAppended( url ) ).to.match( regex );
   } );
