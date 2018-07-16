@@ -113,7 +113,7 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     _intervalId = setInterval( function() {
       _utils.hasInternetConnection( "img/transparent.png", function( hasInternet ) {
         if ( hasInternet ) {
-          _loadFrame();
+          _loadFrame( true );
         }
       } );
     }, _additionalParams.refresh );
@@ -154,12 +154,13 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     return frame;
   }
 
-  function _loadFrame() {
+  function _loadFrame( isRefresh ) {
     var container = document.getElementById( "container" ),
       fragment = document.createDocumentFragment(),
-      frame = _getFrameElement();
+      frame = _getFrameElement(),
+      refreshUrl = isRefresh ? withCacheBuster( _url ) : _url;
 
-    frame.setAttribute( "src", _url );
+    frame.setAttribute( "src", refreshUrl );
 
     fragment.appendChild( frame );
     container.appendChild( fragment );
@@ -220,7 +221,7 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     logEvent( { "event": "play", "url": _url } );
 
     if ( _initialLoad || _additionalParams.unload ) {
-      _loadFrame();
+      _loadFrame( false );
     }
   }
 
@@ -234,13 +235,25 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     _init();
   }
 
+  function withCacheBuster( url ) {
+    var hashIndex = url.indexOf( "#" ),
+      fragments = hashIndex < 0 ? [ url, "" ] : [
+        url.substring( 0, hashIndex ), url.substring( hashIndex )
+      ],
+      separator = /[?&]/.test( fragments[ 0 ] ) ? "&" : "?",
+      timestamp = ( new Date() ).getTime();
+
+    return fragments[ 0 ] + separator + "__cachebuster__=" + timestamp + fragments[ 1 ];
+  }
+
   return {
     "getTableName": getTableName,
     "logEvent": logEvent,
     "setAdditionalParams": setAdditionalParams,
     "pause": pause,
     "play": play,
-    "stop": stop
+    "stop": stop,
+    "withCacheBuster": withCacheBuster
   };
 
 } )( document, gadgets );

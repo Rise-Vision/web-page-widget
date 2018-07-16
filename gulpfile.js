@@ -153,8 +153,19 @@
       "test/unit/settings/**/*spec.js"]}
   ));
 
+  gulp.task("test:unit:widget", factory.testUnitAngular(
+    {testFiles: [
+      "node_modules/widget-tester/mocks/gadget-mocks.js",
+      "node_modules/widget-tester/mocks/logger-mock.js",
+      "src/components/widget-common/dist/config.js",
+      "src/config/test.js",
+      "src/widget/webpage.js",
+      "test/unit/widget/*spec.js"
+    ]}
+  ));
+
   gulp.task("test:unit", (cb) => {
-    runSequence("test:unit:settings", cb);
+    runSequence("test:unit:widget", "test:unit:settings", cb);
   });
 
   // ***** Integration Testing ***** //
