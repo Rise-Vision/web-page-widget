@@ -113,7 +113,7 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     _intervalId = setInterval( function() {
       _utils.hasInternetConnection( "img/transparent.png", function( hasInternet ) {
         if ( hasInternet ) {
-          _loadFrame();
+          _loadFrame( true );
         }
       } );
     }, _additionalParams.refresh );
@@ -154,12 +154,11 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     return frame;
   }
 
-  function _loadFrame() {
+  function _loadFrame( isRefresh ) {
     var container = document.getElementById( "container" ),
       fragment = document.createDocumentFragment(),
       frame = _getFrameElement(),
-      refreshUrl = _additionalParams.refresh > 0 && !_initialLoad ?
-        withCacheBuster( _url ) : _url;
+      refreshUrl = isRefresh ? withCacheBuster( _url ) : _url;
 
     frame.setAttribute( "src", refreshUrl );
 
@@ -222,7 +221,7 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     logEvent( { "event": "play", "url": _url } );
 
     if ( _initialLoad || _additionalParams.unload ) {
-      _loadFrame();
+      _loadFrame( false );
     }
   }
 
