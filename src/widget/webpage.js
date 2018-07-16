@@ -158,7 +158,8 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     var container = document.getElementById( "container" ),
       fragment = document.createDocumentFragment(),
       frame = _getFrameElement(),
-      refreshUrl = _additionalParams.refresh > 0 ? withCacheBuster( _url ) : _url;
+      refreshUrl = _additionalParams.refresh > 0 && !_initialLoad ?
+        withCacheBuster( _url ) : _url;
 
     frame.setAttribute( "src", refreshUrl );
 
