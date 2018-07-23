@@ -80,7 +80,7 @@
             </div>
 
             <!-- Cache Buster -->
-            <div class="form-group">
+            <div ng-show="settings.additionalParams.refresh" class="form-group">
               <div class="checkbox">
                 <label>
                   <input name="cacheBuster" type="checkbox" ng-model="settings.additionalParams.cacheBuster">
