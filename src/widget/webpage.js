@@ -154,11 +154,19 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     return frame;
   }
 
+  function _shouldUseCacheBuster( isRefresh ) {
+    var useCacheBuster = !_additionalParams.hasOwnProperty( "cacheBuster" ) ||
+      _additionalParams.cacheBuster;
+
+    return isRefresh && useCacheBuster;
+  }
+
   function _loadFrame( isRefresh ) {
     var container = document.getElementById( "container" ),
       fragment = document.createDocumentFragment(),
       frame = _getFrameElement(),
-      refreshUrl = isRefresh ? withCacheBuster( _url ) : _url;
+      refreshUrl = _shouldUseCacheBuster( isRefresh ) ?
+        withCacheBuster( _url ) : _url;
 
     frame.setAttribute( "src", refreshUrl );
 
