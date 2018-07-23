@@ -64,6 +64,7 @@ angular.module( "risevision.widget.web-page.settings" )
   .value( "defaultSettings", {
     params: {},
     additionalParams: {
+      cacheBuster: true,
       interactivity: {
         interactive: false,
         scrollbars: false

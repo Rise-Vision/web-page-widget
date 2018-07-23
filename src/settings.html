@@ -79,6 +79,16 @@
               </div>
             </div>
 
+            <!-- Cache Buster -->
+            <div ng-show="settings.additionalParams.refresh > 0" class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input name="cacheBuster" type="checkbox" ng-model="settings.additionalParams.cacheBuster">
+                  {{ "widget-web-page.cacheBuster.label" | translate}}
+                </label>
+              </div>
+            </div>
+
             <hr>
 
             <!-- Region -->
