@@ -197,6 +197,7 @@
         var settings = {
           params: {},
           additionalParams: {
+            cacheBuster: true,
             interactivity: {
               interactive: false,
               scrollbars: false
