@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Web Page Widget</title>
+
+  <link rel="stylesheet" type="text/css" href="../../src/widget/css/webpage.css">
+  <link rel="stylesheet" href="../../src/components/widget-common/dist/css/message.css">
+
+  <script src="../../src/components/web-component-tester/browser.js"></script>
+
+</head>
+<body>
+
+<div id="container">
+  <div class="blocker"></div>
+</div>
+
+<div id="messageContainer"></div>
+
+<script src="../data/webpage-refresh-no-cache-buster.js"></script>
+
+<script src="../../node_modules/widget-tester/mocks/gadget-mocks.js"></script>
+<script src="../../node_modules/widget-tester/mocks/logger-mock.js"></script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+<script src="../../src/components/widget-common/dist/config.js"></script>
+<script src="../../src/components/widget-common/dist/common.js"></script>
+<script src="../../src/widget/webpage.js"></script>
+<script src="../../src/components/widget-common/dist/message.js"></script>
+
+<script>
+
+  var paramsStub, server, clock, tempFrame;
+
+  paramsStub = sinon.stub(RiseVision.WebPage, "setAdditionalParams", function (names) {
+    server = sinon.fakeServer.create();
+    server.respondImmediately = true;
+    server.respondWith("Page Content");
+
+    paramsStub.restore();
+    RiseVision.WebPage.setAdditionalParams(names);
+  });
+
+  suite("Refresh", function() {
+
+    suiteTeardown(function() {
+      server.restore();
+      clock.restore();
+    });
+
+    test("Should check if internet connection exists and refresh page with good connection", function (done) {
+      var spy = sinon.spy(RiseVision.Common.Utilities, "hasInternetConnection"),
+        frame = document.querySelector(".webpage-frame"),
+        onload = frame.onload;
+
+      frame.onload = function() {
+        clock = sinon.useFakeTimers();
+
+        onload.call(this);
+        clock.tick(60000);
+
+        assert(spy.calledOnce);
+
+        RiseVision.Common.Utilities.hasInternetConnection.restore();
+
+        done();
+      };
+    });
+
+    test("Should add a second iframe on a refresh", function () {
+      assert.equal(document.querySelectorAll(".webpage-frame").length, 2);
+    });
+
+    test("should set frame border to 0", function() {
+      tempFrame = document.querySelectorAll(".webpage-frame")[1];
+
+      assert.equal(tempFrame.getAttribute("frameBorder"), "0");
+    });
+
+    test("should allow transparency", function () {
+      assert.equal(tempFrame.getAttribute("allowTransparency"), "true");
+    });
+
+    test("should be invisible", function() {
+      assert.equal(tempFrame.style.visibility, "hidden");
+    });
+
+    test("should apply negative top and left margins to iframe", function () {
+      assert.equal(tempFrame.style.margin, "-20px 0px 0px -10px");
+    });
+
+    test("should set scale to 75%", function() {
+      assert.equal(tempFrame.style.webkitTransform, "scale(0.75)", "webkitTransform");
+      assert.equal(tempFrame.style.transform, "scale(0.75)", "transform");
+    });
+
+    test("should set width and height for a scale of 75%", function() {
+      assert.equal(tempFrame.style.width, "135%", "width");
+      assert.equal(tempFrame.style.height, "133.333%", "height");
+    });
+
+    test("should set src attribute with url value and no cache buster", function () {
+      assert.equal(tempFrame.getAttribute("src"), "http://www.risevision.com");
+    });
+
+    test("should show second iframe", function(done) {
+      var onload = tempFrame.onload;
+
+      tempFrame.onload = function() {
+        onload.call(this);
+
+        assert.equal(tempFrame.style.visibility, "visible");
+        done();
+      }
+    });
+
+    test("should remove first iframe", function() {
+      assert.equal(document.querySelectorAll(".webpage-frame").length, 1);
+    });
+
+  });
+</script>
+
+<script src="../../src/widget/main.js"></script>
+</body>
+</html>

@@ -78,6 +78,10 @@
         expect( element( by.model( "settings.additionalParams.unload" ) ).isSelected() ).to.eventually.be.true;
       } );
 
+      it( "Should select 'Enable cache buster'", function() {
+        expect( element( by.model( "settings.additionalParams.cacheBuster" ) ).isSelected() ).to.eventually.be.true;
+      } );
+
       it( "Should not select 'Allow Interaction'", function() {
         expect( element( by.model( "settings.additionalParams.interactivity.interactive" ) ).isSelected() ).to.eventually.be.false;
       } );
@@ -90,6 +94,24 @@
     } );
 
     describe( "Visibility", function() {
+      it( "Should not show 'Enable cache buster' if no refresh interval is selected", function() {
+        expect( element( by.model( "settings.additionalParams.cacheBuster" ) ).isDisplayed() ).to.eventually.be.false;
+      } );
+
+      it( "Should show 'Enable cache buster' if a refresh interval is selected", function() {
+        element( by.css( "select[name='refresh']" ) ).click();
+        element( by.css( "select[name='refresh'] option[value='60000']" ) ).click();
+
+        expect( element( by.model( "settings.additionalParams.cacheBuster" ) ).isDisplayed() ).to.eventually.be.true;
+      } );
+
+      it( "Should not show 'Enable cache buster' if 'Never Refresh' is selected", function() {
+        element( by.css( "select[name='refresh']" ) ).click();
+        element( by.css( "select[name='refresh'] option[value='0']" ) ).click();
+
+        expect( element( by.model( "settings.additionalParams.cacheBuster" ) ).isDisplayed() ).to.eventually.be.false;
+      } );
+
       it( "Should not show scroll settings if 'Show Entire Page' is selected", function() {
         expect( element( by.model( "settings.additionalParams.region.horizontal" ) ).isDisplayed() ).to.eventually.be.false;
         expect( element( by.model( "settings.additionalParams.region.vertical" ) ).isDisplayed() ).to.eventually.be.false;
@@ -197,6 +219,7 @@
         var settings = {
           params: {},
           additionalParams: {
+            cacheBuster: true,
             interactivity: {
               interactive: false,
               scrollbars: false

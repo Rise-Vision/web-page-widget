@@ -27,6 +27,14 @@ RiseVision.WebPage = ( function( document, gadgets ) {
       true, true, true, true, false );
   }
 
+  function _logConfiguration() {
+    logEvent( {
+      event: "configuration",
+      event_details: JSON.stringify( _additionalParams ),
+      url: _url
+    } )
+  }
+
   function _setInteractivity( frame ) {
     var blocker = document.querySelector( ".blocker" );
 
@@ -154,11 +162,19 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     return frame;
   }
 
+  function _shouldUseCacheBuster( isRefresh ) {
+    var useCacheBuster = !_additionalParams.hasOwnProperty( "cacheBuster" ) ||
+      _additionalParams.cacheBuster;
+
+    return isRefresh && useCacheBuster;
+  }
+
   function _loadFrame( isRefresh ) {
     var container = document.getElementById( "container" ),
       fragment = document.createDocumentFragment(),
       frame = _getFrameElement(),
-      refreshUrl = isRefresh ? withCacheBuster( _url ) : _url;
+      refreshUrl = _shouldUseCacheBuster( isRefresh ) ?
+        withCacheBuster( _url ) : _url;
 
     frame.setAttribute( "src", refreshUrl );
 
@@ -196,6 +212,7 @@ RiseVision.WebPage = ( function( document, gadgets ) {
       _url = "http://" + _url;
     }
 
+    _logConfiguration();
     _ready();
   }
 
@@ -217,9 +234,6 @@ RiseVision.WebPage = ( function( document, gadgets ) {
   }
 
   function play() {
-
-    logEvent( { "event": "play", "url": _url } );
-
     if ( _initialLoad || _additionalParams.unload ) {
       _loadFrame( false );
     }
