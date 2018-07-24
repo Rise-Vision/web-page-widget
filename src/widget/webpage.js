@@ -27,6 +27,14 @@ RiseVision.WebPage = ( function( document, gadgets ) {
       true, true, true, true, false );
   }
 
+  function _logConfiguration() {
+    logEvent( {
+      event: "configuration",
+      event_details: JSON.stringify( _additionalParams ),
+      url: _url
+    } )
+  }
+
   function _setInteractivity( frame ) {
     var blocker = document.querySelector( ".blocker" );
 
@@ -204,6 +212,7 @@ RiseVision.WebPage = ( function( document, gadgets ) {
       _url = "http://" + _url;
     }
 
+    _logConfiguration();
     _ready();
   }
 
@@ -225,9 +234,6 @@ RiseVision.WebPage = ( function( document, gadgets ) {
   }
 
   function play() {
-
-    logEvent( { "event": "play", "url": _url } );
-
     if ( _initialLoad || _additionalParams.unload ) {
       _loadFrame( false );
     }
