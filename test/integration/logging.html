@@ -56,9 +56,10 @@
     setup(function() {
     });
 
-    suite("play", function() {
+    suite("configuration", function() {
       test("should log the play event", function() {
-        params.event = "play";
+        params.event = "configuration";
+        params.event_details = JSON.stringify( window.gadget.settings.additionalParams );
         assert(spy.calledOnce);
         assert(spy.calledWith(table, params));
       });
