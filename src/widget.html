@@ -19,6 +19,16 @@
 
   <div id="messageContainer"></div>
 
+  <script>
+    if (document.domain.indexOf("localhost") === -1) {
+      try {
+        document.domain = "risevision.com";
+      } catch (err) {
+        // can't set document.domain, risevision.com not an accepted suffix of current document domain
+      }
+    }
+  </script>
+
   <!-- build:e2egadgets -->
   <script src="gadgets/gadgets.min.js"></script>
   <!-- endbuild -->
