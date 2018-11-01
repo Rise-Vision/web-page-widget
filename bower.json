@@ -45,6 +45,7 @@
     "lodash": "~4.17.4",
     "angular-ui-router": "^0.2.18",
     "angular-ui-tinymce": "^0.0.18",
-    "angular-sanitize": "~1.5.0"
+    "angular-sanitize": "~1.5.0",
+    "widget-settings-ui-components": "4a79560bb92ecdc93d6904c7e06e62f8e45b9b42"
   }
 }
