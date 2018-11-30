@@ -8,8 +8,8 @@ angular.module( "risevision.widget.web-page.settings" )
 
       $scope.validateXFrame = function() {
         responseHeaderAnalyzer.getOptions( $scope.settings.additionalParams.url )
-        .then( function( value ) {
-          $scope.noXFrameOptions = !value;
+        .then( function( options ) {
+          $scope.noXFrameOptions = !options.includes( "X-Frame-Options" );
         } );
       };
 

@@ -9,7 +9,7 @@ angular.module( "risevision.widget.web-page.settings" )
         options.push( "X-Frame-Options" );
       }
 
-      return options.length > 0;
+      return options;
     }
 
     var factory = {
@@ -21,16 +21,16 @@ angular.module( "risevision.widget.web-page.settings" )
         } ).then( function( response ) {
 
           if ( ! response ) {
-            return false;
+            return [];
           }
 
           $log.debug( response.headers() );
 
-          return response.headers() ? extractOptionsFrom( response ) : false;
+          return response.headers() ? extractOptionsFrom( response ) : [];
         }, function( response ) {
           $log.debug( "Webpage request failed with status code " + response.status + ": " + response.statusText );
 
-          return false;
+          return [];
         } );
       }
     };

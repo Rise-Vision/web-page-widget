@@ -38,8 +38,9 @@ describe( "Response Header Analyzer", function() {
     } );
 
     it( "should return true when X-Frame-Options header is present in response of webpage request", function( done ) {
-      responseHeaderAnalyzer.getOptions( "http://www.google.com" ).then( function( value ) {
-        expect( value ).to.be.true;
+      responseHeaderAnalyzer.getOptions( "http://www.google.com" )
+      .then( function( options ) {
+        expect( options ).to.deep.equal([ "X-Frame-Options" ]);
         done();
       } );
 
@@ -47,8 +48,9 @@ describe( "Response Header Analyzer", function() {
     } );
 
     it( "should return false when X-Frame-Options header is not present in response of webpage request", function( done ) {
-      responseHeaderAnalyzer.getOptions( "http://www.risevision.com" ).then( function( value ) {
-        expect( value ).to.be.false;
+      responseHeaderAnalyzer.getOptions( "http://www.risevision.com" )
+      .then( function( options ) {
+        expect( options ).to.deep.equal([]);
         done();
       } );
 
