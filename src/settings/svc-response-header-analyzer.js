@@ -25,12 +25,17 @@ angular.module( "risevision.widget.web-page.settings" )
     };
 
     function extractOptionsFrom( response ) {
-      var options = [],
-        xframe;
+      var header,
+        options = [];
 
-      xframe = response.headers( "X-Frame-Options" );
-      if ( xframe !== null && xframe.indexOf( "ALLOW-FROM" ) === -1 ) {
+      header = response.headers( "X-Frame-Options" );
+      if ( header !== null && header.indexOf( "ALLOW-FROM" ) === -1 ) {
         options.push( "X-Frame-Options" );
+      }
+
+      header = response.headers( "content-security-policy" );
+      if ( header !== null && header.indexOf( "frame-ancestors" ) > 0 ) {
+        options.push( "frame-ancestors" );
       }
 
       return options;
