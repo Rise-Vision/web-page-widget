@@ -1,6 +1,17 @@
 angular.module( "risevision.widget.web-page.settings" )
   .factory( "responseHeaderAnalyzer", [ "$log", "$http", function( $log, $http ) {
 
+    var extractOptionsFrom = function( response ) {
+      var options = [];
+
+      var xframe = response.headers( "X-Frame-Options" );
+      if( xframe !== null && xframe.indexOf( "ALLOW-FROM" ) === -1 ) {
+        options.push( "X-Frame-Options" );
+      }
+
+      return options.length > 0;
+    }
+
     var factory = {
       getOptions: function( url ) {
 
@@ -8,17 +19,18 @@ angular.module( "risevision.widget.web-page.settings" )
           method: "GET",
           url: "https://proxy.risevision.com/" + url
         } ).then( function( response ) {
-          var xframe;
+
+          if ( ! response ) {
+            return false;
+          }
 
           $log.debug( response.headers() );
 
-          if ( response && response.headers() ) {
-            xframe = response.headers( "X-Frame-Options" );
-            return xframe !== null && xframe.indexOf( "ALLOW-FROM" ) === -1;
-          }
-
+          return response.headers() ? extractOptionsFrom( response ) : false;
         }, function( response ) {
           $log.debug( "Webpage request failed with status code " + response.status + ": " + response.statusText );
+
+          return false;
         } );
       }
     };
