@@ -4,7 +4,7 @@
 
 "use strict";
 
-describe( "X-Frame Options", function() {
+describe( "Response Header Analyzer", function() {
   var $httpBackend,
     responseHeaderAnalyzer;
 
