@@ -2,7 +2,7 @@ angular.module( "risevision.widget.web-page.settings" )
   .factory( "responseHeaderAnalyzer", [ "$log", "$http", function( $log, $http ) {
 
     var factory = {
-      hasOptions: function( url ) {
+      getOptions: function( url ) {
 
         return $http( {
           method: "GET",

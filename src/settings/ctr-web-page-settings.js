@@ -7,7 +7,7 @@ angular.module( "risevision.widget.web-page.settings" )
       $scope.urlInput = false;
 
       $scope.validateXFrame = function() {
-        responseHeaderAnalyzer.hasOptions( $scope.settings.additionalParams.url )
+        responseHeaderAnalyzer.getOptions( $scope.settings.additionalParams.url )
         .then( function( value ) {
           $scope.noXFrameOptions = !value;
         } );

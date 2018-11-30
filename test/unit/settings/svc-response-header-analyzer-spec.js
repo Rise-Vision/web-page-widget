@@ -31,14 +31,14 @@ describe( "Response Header Analyzer", function() {
     } );
   } );
 
-  describe( "hasOptions", function() {
+  describe( "getOptions", function() {
     it( "should exist", function() {
-      expect( responseHeaderAnalyzer.hasOptions ).be.defined;
-      expect( responseHeaderAnalyzer.hasOptions ).to.be.a( "function" );
+      expect( responseHeaderAnalyzer.getOptions ).be.defined;
+      expect( responseHeaderAnalyzer.getOptions ).to.be.a( "function" );
     } );
 
     it( "should return true when X-Frame-Options header is present in response of webpage request", function( done ) {
-      responseHeaderAnalyzer.hasOptions( "http://www.google.com" ).then( function( value ) {
+      responseHeaderAnalyzer.getOptions( "http://www.google.com" ).then( function( value ) {
         expect( value ).to.be.true;
         done();
       } );
@@ -47,7 +47,7 @@ describe( "Response Header Analyzer", function() {
     } );
 
     it( "should return false when X-Frame-Options header is not present in response of webpage request", function( done ) {
-      responseHeaderAnalyzer.hasOptions( "http://www.risevision.com" ).then( function( value ) {
+      responseHeaderAnalyzer.getOptions( "http://www.risevision.com" ).then( function( value ) {
         expect( value ).to.be.false;
         done();
       } );
