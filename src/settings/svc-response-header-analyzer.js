@@ -29,8 +29,6 @@ angular.module( "risevision.widget.web-page.settings" )
         options = [];
 
       header = response.headers( "X-Frame-Options" );
-      console.log( "------------------------------##############" ) // eslint-disable-line no-console
-      console.log( typeof header ) // eslint-disable-line no-console
       if ( header !== null && header.indexOf( "ALLOW-FROM" ) === -1 ) {
         options.push( "X-Frame-Options" );
       }

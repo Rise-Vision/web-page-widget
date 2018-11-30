@@ -2,6 +2,7 @@ angular.module( "risevision.widget.web-page.settings" )
   .controller( "webPageSettingsController", [ "$scope", "$log", "responseHeaderAnalyzer",
     function( $scope, $log, responseHeaderAnalyzer ) {
 
+      $scope.noFrameAncestors = true;
       $scope.noXFrameOptions = true;
       $scope.isPreviewUrl = false;
       $scope.urlInput = false;
@@ -9,6 +10,7 @@ angular.module( "risevision.widget.web-page.settings" )
       $scope.validateXFrame = function() {
         responseHeaderAnalyzer.getOptions( $scope.settings.additionalParams.url )
         .then( function( options ) {
+          $scope.noFrameAncestors = !options.includes( "frame-ancestors" );
           $scope.noXFrameOptions = !options.includes( "X-Frame-Options" );
         } );
       };
@@ -35,7 +37,8 @@ angular.module( "risevision.widget.web-page.settings" )
           $scope.validateXFrame();
         } else {
           if ( typeof newVal !== "undefined" ) {
-            // ensure warning message doesn't get shown while url field is receiving input
+            // ensure warning messages don't get shown while url field is receiving input
+            $scope.noFrameAncestors = true;
             $scope.noXFrameOptions = true;
 
             if ( newVal !== "" ) {
