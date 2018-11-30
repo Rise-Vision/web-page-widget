@@ -1,13 +1,14 @@
 angular.module( "risevision.widget.web-page.settings" )
-  .controller( "webPageSettingsController", [ "$scope", "$log", "xframeOptions",
-    function( $scope, $log, xframeOptions ) {
+  .controller( "webPageSettingsController", [ "$scope", "$log", "responseHeaderAnalyzer",
+    function( $scope, $log, responseHeaderAnalyzer ) {
 
       $scope.noXFrameOptions = true;
       $scope.isPreviewUrl = false;
       $scope.urlInput = false;
 
       $scope.validateXFrame = function() {
-        xframeOptions.hasOptions( $scope.settings.additionalParams.url ).then( function( value ) {
+        responseHeaderAnalyzer.hasOptions( $scope.settings.additionalParams.url )
+        .then( function( value ) {
           $scope.noXFrameOptions = !value;
         } );
       };

@@ -6,7 +6,7 @@
 
 describe( "X-Frame Options", function() {
   var $httpBackend,
-    xframeOptions;
+    responseHeaderAnalyzer;
 
   beforeEach( module( "risevision.widget.web-page.settings" ) );
 
@@ -21,24 +21,24 @@ describe( "X-Frame Options", function() {
   } ) );
 
 
-  beforeEach( inject( function( _xframeOptions_ ) {
-    xframeOptions = _xframeOptions_;
+  beforeEach( inject( function( _responseHeaderAnalyzer_ ) {
+    responseHeaderAnalyzer = _responseHeaderAnalyzer_;
   } ) );
 
-  describe( "xframeOptions", function() {
+  describe( "responseHeaderAnalyzer", function() {
     it( "should exist", function() {
-      expect( xframeOptions ).to.be.defined;
+      expect( responseHeaderAnalyzer ).to.be.defined;
     } );
   } );
 
   describe( "hasOptions", function() {
     it( "should exist", function() {
-      expect( xframeOptions.hasOptions ).be.defined;
-      expect( xframeOptions.hasOptions ).to.be.a( "function" );
+      expect( responseHeaderAnalyzer.hasOptions ).be.defined;
+      expect( responseHeaderAnalyzer.hasOptions ).to.be.a( "function" );
     } );
 
     it( "should return true when X-Frame-Options header is present in response of webpage request", function( done ) {
-      xframeOptions.hasOptions( "http://www.google.com" ).then( function( value ) {
+      responseHeaderAnalyzer.hasOptions( "http://www.google.com" ).then( function( value ) {
         expect( value ).to.be.true;
         done();
       } );
@@ -47,7 +47,7 @@ describe( "X-Frame Options", function() {
     } );
 
     it( "should return false when X-Frame-Options header is not present in response of webpage request", function( done ) {
-      xframeOptions.hasOptions( "http://www.risevision.com" ).then( function( value ) {
+      responseHeaderAnalyzer.hasOptions( "http://www.risevision.com" ).then( function( value ) {
         expect( value ).to.be.false;
         done();
       } );
