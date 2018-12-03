@@ -187,6 +187,16 @@
       } );
     } );
 
+    describe( "frame-ancestors warning message", function() {
+      it( "should show warning message when a webpage with content-security-policy header is present and restricts by frame-ancestors", function() {
+        element( by.css( "#pageUrl input[name='url']" ) ).sendKeys( "https://www.fireeye.com/cyber-map/threat-map.html" );
+        // remove focus
+        element( by.css( "h3.modal-title" ) ).click();
+
+        expect( element( by.css( "#pageUrl + p.text-danger" ) ).isPresent() ).to.eventually.be.true;
+      } );
+    } );
+
     describe( "Saving", function() {
 
       it( "Should enable Save button due to valid URL entry", function() {
