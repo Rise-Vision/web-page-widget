@@ -70,7 +70,7 @@
         element.all( by.css( "select[name='refresh'] option" ) ).then( function( elements ) {
           var i;
           for( i = 0; i<elements.length; i++ ) {
-            console.error( elements[i].value + " = " + elements[i].text );
+            console.error( elements[i].getAttribute("value") + " = " + elements[i].getText() );
           }
           expect( elements.length ).to.equal( 5 );
         } );
