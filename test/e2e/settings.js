@@ -1,4 +1,4 @@
-/* global require, browser, describe, beforeEach, it, element, by, xit */
+/* global require, browser, describe, beforeEach, it, element, by */
 
 /* eslint-disable func-names */
 
@@ -66,10 +66,10 @@
         expect( element( by.css( "input[type='radio'][value='page']" ) ).isSelected() ).to.eventually.be.true;
       } );
 
-      xit( "Should apply ''Never Refresh' for Refresh'", function() {
-        element.all( by.css( "select[name='refresh'] option" ) ).then( function( elements ) {
-          expect( elements.length ).to.equal( 5 );
-        } );
+      it( "Should apply ''Never Refresh' for Refresh'", function() {
+        // element.all( by.css( "select[name='refresh'] option" ) ).then( function( elements ) {
+        //   expect( elements.length ).to.equal( 5 );
+        // } );
 
         expect( element( by.model( "settings.additionalParams.refresh" ) ).getAttribute( "value" ) ).to.eventually.equal( "0" );
       } );
