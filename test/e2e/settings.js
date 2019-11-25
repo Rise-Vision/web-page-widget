@@ -70,7 +70,11 @@
         element.all( by.css( "select[name='refresh'] option" ) ).then( function( elements ) {
           var i;
           for( i = 0; i<elements.length; i++ ) {
-            console.error( elements[i].getAttribute("value") + " = " + elements[i].getText() );
+            var element = elements[i];
+            console.log( typeof element );
+            console.log( typeof element.getAttribute("value") );
+            console.log( typeof element.getText() );
+            console.error( JSON.stringify( element.getAttribute("value") ) + " = " + JSON.stringify( element.getText() ) );
           }
           expect( elements.length ).to.equal( 5 );
         } );
