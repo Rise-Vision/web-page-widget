@@ -66,12 +66,16 @@
         expect( element( by.css( "input[type='radio'][value='page']" ) ).isSelected() ).to.eventually.be.true;
       } );
 
-      it( "Should apply ''Never Refresh' for Refresh'", function() {
-        // element.all( by.css( "select[name='refresh'] option" ) ).then( function( elements ) {
-        //   expect( elements.length ).to.equal( 5 );
-        // } );
+      it( "Should apply ''Never Refresh' for Refresh'", function( done ) {
+        setTimeout( function() {
+          element.all( by.css( "select[name='refresh'] option" ) ).then( function( elements ) {
+            console.log( '----------------------------' + elements.length );
+            // expect( elements.length ).to.equal( 5 );
+          } );
 
-        expect( element( by.id( "refresh" ) ).getAttribute( "value" ) ).to.eventually.equal( "0" );
+          expect( element( by.css( "select[name='refresh']" ) ).getAttribute( "value" ) ).to.eventually.equal( "0" );
+          done();
+        }, 100 );
       } );
 
       it( "Should select 'Unload Web Page'", function() {
