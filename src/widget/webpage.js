@@ -135,6 +135,7 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     frame.style.visibility = "hidden";
     frame.setAttribute( "frameborder", "0" );
     frame.setAttribute( "allowTransparency", "true" );
+    frame.setAttribute( "allow", "fullscreen" );
     frame.setAttribute( "sandbox", "allow-forms allow-same-origin allow-scripts" );
 
     _setInteractivity( frame );
