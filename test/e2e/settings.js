@@ -43,7 +43,7 @@
       } );
 
       xit( "Should apply 100% value for Zoom", function() {
-        expect( element( by.model( "settings.additionalParams.zoom" ) ).getAttribute( "value" ) ).to.eventually.equal( "1" );
+        expect( element( by.id( "zoom" ) ).getAttribute( "value" ) ).to.eventually.equal( "1" );
       } );
 
       it( "Should apply form as invalid due to URL Field empty entry", function() {
@@ -71,7 +71,7 @@
         //   expect( elements.length ).to.equal( 5 );
         // } );
 
-        expect( element( by.model( "settings.additionalParams.refresh" ) ).getAttribute( "value" ) ).to.eventually.equal( "0" );
+        expect( element( by.id( "refresh" ) ).getAttribute( "value" ) ).to.eventually.equal( "0" );
       } );
 
       it( "Should select 'Unload Web Page'", function() {
