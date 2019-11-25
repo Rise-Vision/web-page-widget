@@ -71,10 +71,14 @@
           var i;
           for( i = 0; i<elements.length; i++ ) {
             var element = elements[i];
-            console.log( typeof element );
-            console.log( typeof element.getAttribute("value") );
-            console.log( typeof element.getText() );
-            console.error( JSON.stringify( element.getAttribute("value") ) + " = " + JSON.stringify( element.getText() ) );
+            var value = element.getAttribute("value");
+            var text = element.getText();
+            console.log("------------------");
+            for( var name in value )
+              console.log( name + "=" + value[name] );
+            console.log("%%%%%%%%%%%%%");
+            for( var key in text )
+              console.log( key + "=" + text[key] );
           }
           expect( elements.length ).to.equal( 5 );
         } );
