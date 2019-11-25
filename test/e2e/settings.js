@@ -1,4 +1,4 @@
-/* global require, browser, describe, beforeEach, it, element, by */
+/* global require, browser, describe, beforeEach, it, element, by, xit */
 
 /* eslint-disable func-names */
 

@@ -8,6 +8,7 @@ module.exports = {
     "angular": 1
   },
   "rules": {
+    "func-names": "off",
     "quotes": [
       "error",
       "double"
