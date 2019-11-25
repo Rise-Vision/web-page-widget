@@ -86,7 +86,7 @@
   });
 
   gulp.task("fonts", () => {
-    return gulp.src("src/components/common-style/dist/fonts/**/*")
+    return gulp.src("src/components/common-header/dist/fonts/**/*")
       .pipe(gulp.dest("dist/fonts"));
   });
 
