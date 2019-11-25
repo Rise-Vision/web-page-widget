@@ -68,7 +68,10 @@
 
       it( "Should apply ''Never Refresh' for Refresh'", function() {
         element.all( by.css( "select[name='refresh'] option" ) ).then( function( elements ) {
-          console.error( JSON.stringify( elements ) );
+          var i;
+          for( i = 0; i<elements.length; i++ ) {
+            console.error( elements[i].value + " = " elements[i].text );
+          }
           expect( elements.length ).to.equal( 5 );
         } );
 
