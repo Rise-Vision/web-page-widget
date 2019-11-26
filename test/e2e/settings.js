@@ -43,7 +43,7 @@
       } );
 
       it( "Should apply 100% value for Zoom", function() {
-        expect( element( by.css( "#zoom option[selected='selected']" ) ).getAttribute( "value" ) ).to.eventually.equal( "1" );
+        expect( element( by.css( "#zoom option[selected='selected']" ) ).getText() ).to.eventually.equal( "100%" );
       } );
 
       it( "Should apply form as invalid due to URL Field empty entry", function() {
