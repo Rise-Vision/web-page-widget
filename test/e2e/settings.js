@@ -67,7 +67,7 @@
       } );
 
       it( "Should apply ''Never Refresh' for Refresh'", function( done ) {
-        expect( element( by.model( "settings.additionalParams.refresh" ) ).getAttribute( "value" ) ).to.eventually.equal( "0" );
+        expect( element( by.model( "settings.additionalParams.refresh" ) ).getAttribute( "value" ) ).to.eventually.equal( 0 );
       } );
 
       it( "Should select 'Unload Web Page'", function() {
