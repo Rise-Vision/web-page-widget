@@ -42,8 +42,8 @@
         expect( element( by.css( "#pageUrl input[name='url']" ) ).getAttribute( "value" ) ).to.eventually.equal( "" );
       } );
 
-      xit( "Should apply 100% value for Zoom", function() {
-        expect( element( by.css( "select[name='zoom']" ) ).getAttribute( "value" ) ).to.eventually.equal( "1" );
+      it( "Should apply 100% value for Zoom", function() {
+        expect( element( by.model( "settings.additionalParams.zoom" ) ).getAttribute( "selectedIndex" ) ).to.eventually.equal( "3" );
       } );
 
       it( "Should apply form as invalid due to URL Field empty entry", function() {
@@ -67,7 +67,7 @@
       } );
 
       it( "Should apply ''Never Refresh' for Refresh'", function( done ) {
-        expect( element( by.css( "select[name='refresh']" ) ).getAttribute( "value" ) ).to.eventually.equal( "0" );
+        expect( element( by.model( "settings.additionalParams.refresh" ) ).getAttribute( "selectedIndex" ) ).to.eventually.equal( "0" );
       } );
 
       it( "Should select 'Unload Web Page'", function() {
