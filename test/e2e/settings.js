@@ -72,7 +72,7 @@
             console.log( '----------------------------' + elements.length );
             // expect( elements.length ).to.equal( 5 );
 
-            expect( element( by.css( "select[name='refresh']" ) ).getAttribute( "value" ) ).to.eventually.equal( "0" );
+            expect( element( by.id( "refresh" ) ).getAttribute( "value" ) ).to.eventually.equal( "0" );
             done();
           } );
         }, 100 );
