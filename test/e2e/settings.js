@@ -43,7 +43,7 @@
       } );
 
       xit( "Should apply 100% value for Zoom", function() {
-        expect( element( by.id( "zoom" ) ).getAttribute( "value" ) ).to.eventually.equal( "1" );
+        expect( element( by.css( "select[name='zoom']" ).getAttribute( "value" ) ).to.eventually.equal( "1" );
       } );
 
       it( "Should apply form as invalid due to URL Field empty entry", function() {
@@ -71,10 +71,10 @@
           element.all( by.css( "select[name='refresh'] option" ) ).then( function( elements ) {
             console.log( '----------------------------' + elements.length );
             // expect( elements.length ).to.equal( 5 );
-          } );
 
-          expect( element( by.css( "select[name='refresh']" ) ).getAttribute( "value" ) ).to.eventually.equal( "0" );
-          done();
+            expect( element( by.css( "select[name='refresh']" ) ).getAttribute( "value" ) ).to.eventually.equal( "0" );
+            done();
+          } );
         }, 100 );
       } );
 
