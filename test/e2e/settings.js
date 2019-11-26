@@ -66,7 +66,7 @@
         expect( element( by.css( "input[type='radio'][value='page']" ) ).isSelected() ).to.eventually.be.true;
       } );
 
-      it( "Should apply ''Never Refresh' for Refresh'", function( done ) {
+      xit( "Should apply ''Never Refresh' for Refresh'", function( done ) {
         expect( element( by.model( "settings.additionalParams.refresh" ) ).getAttribute( "selectedIndex" ) ).to.eventually.equal( "0" );
       } );
 
