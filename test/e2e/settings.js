@@ -15,7 +15,7 @@
   expect = chai.expect;
 
   describe( "Web Page Settings - e2e Testing", function() {
-    var validUrl = "http://www.valid-url.com",
+    var validUrl = "https://www.valid-url.com",
       invalidUrl = "http://w";
 
     beforeEach( function() {
@@ -165,7 +165,7 @@
 
     describe( "X-Frame-Options warning message", function() {
       it( "should not show warning when URL Field is receiving input", function() {
-        element( by.css( "#pageUrl input[name='url']" ) ).sendKeys( "http://test" );
+        element( by.css( "#pageUrl input[name='url']" ) ).sendKeys( "https://test" );
 
         expect( element( by.css( "#pageUrl + p.text-danger" ) ).isPresent() ).to.eventually.be.false;
       } );
@@ -179,7 +179,7 @@
       } );
 
       it( "should not show warning message when a webpage doesn't specify X-Frame-Options header", function() {
-        element( by.css( "#pageUrl input[name='url']" ) ).sendKeys( "http://www.risevision.com" );
+        element( by.css( "#pageUrl input[name='url']" ) ).sendKeys( "https://www.risevision.com" );
         // remove focus
         element( by.css( "h3.modal-title" ) ).click();
 
@@ -194,6 +194,30 @@
         element( by.css( "h3.modal-title" ) ).click();
 
         expect( element( by.css( "#pageUrl + p.text-danger" ) ).isPresent() ).to.eventually.be.true;
+      } );
+    } );
+
+    describe( "HTTP protocol error message", function() {
+      it( "should not show warning when URL Field is receiving input", function() {
+        element( by.css( "#pageUrl input[name='url']" ) ).sendKeys( "http://test" );
+
+        expect( element( by.css( "#pageUrl + p.text-danger" ) ).isPresent() ).to.eventually.be.false;
+      } );
+
+      it( "should show warning message when user inputs webpage using HTTP protocol", function() {
+        element( by.css( "#pageUrl input[name='url']" ) ).sendKeys( "http://www.risevision.com" );
+        // remove focus
+        element( by.css( "h3.modal-title" ) ).click();
+
+        expect( element( by.css( "#pageUrl + p.text-danger" ) ).isPresent() ).to.eventually.be.true;
+      } );
+
+      it( "should not show error message when user inputs webpage using HTTPS protocol", function() {
+        element( by.css( "#pageUrl input[name='url']" ) ).sendKeys( "https://www.risevision.com" );
+        // remove focus
+        element( by.css( "h3.modal-title" ) ).click();
+
+        expect( element( by.css( "#pageUrl + p.text-danger" ) ).isPresent() ).to.eventually.be.false;
       } );
     } );
 

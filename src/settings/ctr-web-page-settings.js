@@ -5,7 +5,20 @@ angular.module( "risevision.widget.web-page.settings" )
       $scope.noFrameAncestors = true;
       $scope.noXFrameOptions = true;
       $scope.isPreviewUrl = false;
+      $scope.isInsecureUrl = false;
       $scope.urlInput = false;
+
+      function isInsecureUrl( url ) {
+        return !!( url && url.startsWith( "http://" ) );
+      }
+
+      function processUrl() {
+        $scope.isInsecureUrl = isInsecureUrl( $scope.settings.additionalParams.url );
+
+        if ( !$scope.isInsecureUrl ) {
+          $scope.validateXFrame();
+        }
+      }
 
       $scope.validateXFrame = function() {
         responseHeaderAnalyzer.getOptions( $scope.settings.additionalParams.url )
@@ -17,13 +30,19 @@ angular.module( "risevision.widget.web-page.settings" )
 
       $scope.$on( "urlFieldBlur", function() {
         if ( $scope.settingsForm.pageUrl.$valid ) {
-          $scope.validateXFrame();
+          processUrl();
         }
       } );
 
       $scope.$watch( "urlInput", function( value ) {
         if ( typeof value !== "undefined" ) {
           $scope.settingsForm.pageUrl.$setValidity( "urlInput", value );
+        }
+      } );
+
+      $scope.$watch( "isInsecureUrl", function( value ) {
+        if ( typeof value !== "undefined" ) {
+          $scope.settingsForm.pageUrl.$setValidity( "isInsecureUrl", !value );
         }
       } );
 
@@ -34,12 +53,13 @@ angular.module( "risevision.widget.web-page.settings" )
           $scope.urlInput = true;
 
           // previously saved settings are being shown, ensure to check if page has X-Frame-Options
-          $scope.validateXFrame();
+          processUrl();
         } else {
           if ( typeof newVal !== "undefined" ) {
             // ensure warning messages don't get shown while url field is receiving input
             $scope.noFrameAncestors = true;
             $scope.noXFrameOptions = true;
+            $scope.isInsecureUrl = false;
 
             if ( newVal !== "" ) {
               $scope.urlInput = true;
