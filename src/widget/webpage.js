@@ -209,9 +209,9 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     // Configure the value for _url
     _url = _additionalParams.url;
 
-    // Add https:// if no protocol parameter exists
+    // Add http:// if no protocol parameter exists
     if ( _url.indexOf( "://" ) === -1 ) {
-      _url = "https://" + _url;
+      _url = "http://" + _url;
     }
 
     _logConfiguration();

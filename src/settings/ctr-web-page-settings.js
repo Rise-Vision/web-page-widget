@@ -12,12 +12,22 @@ angular.module( "risevision.widget.web-page.settings" )
         return !!( url && url.startsWith( "http://" ) );
       }
 
+      function isMissingProtocol( url ) {
+        return !!( url && url.indexOf( "://" ) === -1 );
+      }
+
       function processUrl() {
         $scope.isInsecureUrl = isInsecureUrl( $scope.settings.additionalParams.url );
 
-        if ( !$scope.isInsecureUrl ) {
-          $scope.validateXFrame();
+        if ( $scope.isInsecureUrl ) {
+          return;
         }
+
+        if ( isMissingProtocol( $scope.settings.additionalParams.url ) ) {
+          $scope.settings.additionalParams.url = "https://" + $scope.settings.additionalParams.url;
+        }
+
+        $scope.validateXFrame();
       }
 
       $scope.validateXFrame = function() {

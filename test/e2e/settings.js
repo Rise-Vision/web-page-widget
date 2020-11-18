@@ -249,6 +249,14 @@
         expect( element( by.model( "settings.additionalParams.zoom" ) ).getAttribute( "value" ) ).to.eventually.equal( "0.50" );
       } );
 
+      it( "Should prefix a url with https:// if protocol is missing", function() {
+        element( by.css( "#pageUrl input[name='url']" ) ).sendKeys( "risevision.com" );
+        // remove focus
+        element( by.css( "h3.modal-title" ) ).click();
+
+        expect( element( by.css( "#pageUrl input[name='url']" ) ).getAttribute( "value" ) ).to.eventually.equal( "https://risevision.com" );
+      } );
+
       it( "Should correctly save settings", function() {
         var settings = {
           params: {},
