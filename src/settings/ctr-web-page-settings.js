@@ -47,6 +47,10 @@ angular.module( "risevision.widget.web-page.settings" )
       } );
 
       $scope.$watch( "settings.additionalParams.url", function( newVal, oldVal ) {
+        var urlEl = angular.element( document.querySelector( "#pageUrl input[ name = 'url' ]" ) );
+
+        // override directive placeholder to display https://
+        urlEl.attr( "placeholder", "https://" );
         $scope.isPreviewUrl = newVal && newVal.indexOf( "preview.risevision.com" ) > 0;
 
         if ( typeof oldVal === "undefined" && newVal && newVal !== "" ) {
