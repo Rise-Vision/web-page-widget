@@ -5,7 +5,30 @@ angular.module( "risevision.widget.web-page.settings" )
       $scope.noFrameAncestors = true;
       $scope.noXFrameOptions = true;
       $scope.isPreviewUrl = false;
+      $scope.isSecureUrl = true;
       $scope.urlInput = false;
+
+      function isSecureUrl( url ) {
+        return !!( url && url.startsWith( "https://" ) );
+      }
+
+      function isMissingProtocol( url ) {
+        return !!( url && url.indexOf( "://" ) === -1 );
+      }
+
+      function processUrl() {
+        if ( isMissingProtocol( $scope.settings.additionalParams.url ) ) {
+          $scope.settings.additionalParams.url = "https://" + $scope.settings.additionalParams.url;
+        }
+
+        $scope.isSecureUrl = isSecureUrl( $scope.settings.additionalParams.url );
+
+        if ( !$scope.isSecureUrl ) {
+          return;
+        }
+
+        $scope.validateXFrame();
+      }
 
       $scope.validateXFrame = function() {
         responseHeaderAnalyzer.getOptions( $scope.settings.additionalParams.url )
@@ -17,7 +40,7 @@ angular.module( "risevision.widget.web-page.settings" )
 
       $scope.$on( "urlFieldBlur", function() {
         if ( $scope.settingsForm.pageUrl.$valid ) {
-          $scope.validateXFrame();
+          processUrl();
         }
       } );
 
@@ -27,19 +50,30 @@ angular.module( "risevision.widget.web-page.settings" )
         }
       } );
 
+      $scope.$watch( "isSecureUrl", function( value ) {
+        if ( typeof value !== "undefined" ) {
+          $scope.settingsForm.pageUrl.$setValidity( "isSecureUrl", value );
+        }
+      } );
+
       $scope.$watch( "settings.additionalParams.url", function( newVal, oldVal ) {
+        var urlEl = angular.element( document.querySelector( "#pageUrl input[ name = 'url' ]" ) );
+
+        // override directive placeholder to display https://
+        urlEl.attr( "placeholder", "https://" );
         $scope.isPreviewUrl = newVal && newVal.indexOf( "preview.risevision.com" ) > 0;
 
         if ( typeof oldVal === "undefined" && newVal && newVal !== "" ) {
           $scope.urlInput = true;
 
           // previously saved settings are being shown, ensure to check if page has X-Frame-Options
-          $scope.validateXFrame();
+          processUrl();
         } else {
           if ( typeof newVal !== "undefined" ) {
             // ensure warning messages don't get shown while url field is receiving input
             $scope.noFrameAncestors = true;
             $scope.noXFrameOptions = true;
+            $scope.isSecureUrl = true;
 
             if ( newVal !== "" ) {
               $scope.urlInput = true;
