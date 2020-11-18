@@ -60,7 +60,7 @@
               <p ng-if="isPreviewUrl" class="text-danger">
                 {{ "widget-web-page.warning.preview" | translate }}
               </p>
-              <p ng-if="isInsecureUrl" class="text-danger">
+              <p ng-if="!isSecureUrl" class="text-danger">
                 Please use secure URLs (HTTPs). Insecure URLs (HTTP) aren't supported.
               </p>
             </div>

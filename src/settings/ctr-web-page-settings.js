@@ -5,11 +5,11 @@ angular.module( "risevision.widget.web-page.settings" )
       $scope.noFrameAncestors = true;
       $scope.noXFrameOptions = true;
       $scope.isPreviewUrl = false;
-      $scope.isInsecureUrl = false;
+      $scope.isSecureUrl = true;
       $scope.urlInput = false;
 
-      function isInsecureUrl( url ) {
-        return !!( url && url.startsWith( "http://" ) );
+      function isSecureUrl( url ) {
+        return !!( url && url.startsWith( "https://" ) );
       }
 
       function isMissingProtocol( url ) {
@@ -17,14 +17,14 @@ angular.module( "risevision.widget.web-page.settings" )
       }
 
       function processUrl() {
-        $scope.isInsecureUrl = isInsecureUrl( $scope.settings.additionalParams.url );
-
-        if ( $scope.isInsecureUrl ) {
-          return;
-        }
-
         if ( isMissingProtocol( $scope.settings.additionalParams.url ) ) {
           $scope.settings.additionalParams.url = "https://" + $scope.settings.additionalParams.url;
+        }
+
+        $scope.isSecureUrl = isSecureUrl( $scope.settings.additionalParams.url );
+
+        if ( !$scope.isSecureUrl ) {
+          return;
         }
 
         $scope.validateXFrame();
@@ -50,9 +50,9 @@ angular.module( "risevision.widget.web-page.settings" )
         }
       } );
 
-      $scope.$watch( "isInsecureUrl", function( value ) {
+      $scope.$watch( "isSecureUrl", function( value ) {
         if ( typeof value !== "undefined" ) {
-          $scope.settingsForm.pageUrl.$setValidity( "isInsecureUrl", !value );
+          $scope.settingsForm.pageUrl.$setValidity( "isSecureUrl", value );
         }
       } );
 
@@ -73,7 +73,7 @@ angular.module( "risevision.widget.web-page.settings" )
             // ensure warning messages don't get shown while url field is receiving input
             $scope.noFrameAncestors = true;
             $scope.noXFrameOptions = true;
-            $scope.isInsecureUrl = false;
+            $scope.isSecureUrl = true;
 
             if ( newVal !== "" ) {
               $scope.urlInput = true;
