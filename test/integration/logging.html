@@ -26,8 +26,8 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
-<script src="../../src/components/widget-common/dist/common.js"></script>
 <script src="../../src/components/widget-common/dist/config.js"></script>
+<script src="../../src/components/widget-common/dist/common.js"></script>
 <script src="../../src/widget/webpage.js"></script>
 <script src="../../src/components/widget-common/dist/message.js"></script>
 
@@ -55,11 +55,8 @@
       spy.restore();
     });
 
-    setup(function() {
-    });
-
     suite("configuration", function() {
-      test("should log the play event", function() {
+      test("should log the configuration event", function() {
         params.event = "configuration";
         params.event_details = JSON.stringify( window.gadget.settings.additionalParams );
         assert(spy.calledOnce);
