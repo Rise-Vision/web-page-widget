@@ -218,6 +218,10 @@ RiseVision.WebPage = ( function( document, gadgets ) {
     _ready();
   }
 
+  function getWidgetId() {
+    return _utils.getQueryParameter( "up_id" );
+  }
+
   /*
    *  Public Methods
    */
@@ -226,7 +230,7 @@ RiseVision.WebPage = ( function( document, gadgets ) {
   }
 
   function logEvent( params ) {
-    RiseVision.Common.LoggerUtils.logEvent( getTableName(), params );
+    RiseVision.Common.LoggerUtils.logEvent( getTableName(), Object.assign( {}, params, { "widget_id": getWidgetId() } ) );
   }
 
   function pause() {
