@@ -66,9 +66,6 @@
     gadgets.rpc.call( "", "rsparam_get", null, id, [ "companyId", "displayId", "additionalParams" ] );
   }
 
-  // TODO: prevent HTTP
-  // TODO: log presentation id
-
 } )( window, document, gadgets );
 
 
