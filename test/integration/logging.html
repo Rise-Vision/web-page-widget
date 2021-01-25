@@ -51,7 +51,17 @@
         "display_id": '"displayId"',
         "version": version,
         "widget_id": null
+      },
+      endpointParams = {
+        eventApp: "widget-web-page",
+        severity: "info",
+        debugInfo: JSON.stringify( {
+          event: "configuration",
+          event_details: window.gadget.settings.additionalParams,
+          url: window.gadget.settings.additionalParams.url
+        } )
       };
+
 
     suiteTeardown(function() {
       spy.restore();
@@ -62,7 +72,7 @@
         params.event = "configuration";
         params.event_details = JSON.stringify( window.gadget.settings.additionalParams );
         assert(spy.calledOnce);
-        assert(spy.calledWith(table, params));
+        assert(spy.calledWith(table, params, endpointParams));
       });
     });
 

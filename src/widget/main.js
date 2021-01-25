@@ -37,6 +37,7 @@
       // provide LoggerUtils the ids to use
       RiseVision.Common.LoggerUtils.setIds( companyId, displayId );
       RiseVision.Common.LoggerUtils.setVersion( version );
+      RiseVision.Common.LoggerUtils.startEndpointHeartbeats( "widget-web-page" );
 
 
       // additional params
