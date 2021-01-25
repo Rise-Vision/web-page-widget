@@ -8,6 +8,7 @@
     eslint = require("gulp-eslint"),
     env = process.env.NODE_ENV || "prod",
     factory = require("widget-tester").gulpTaskFactory,
+    file = require("gulp-file"),
     gulp = require("gulp"),
     gulpif = require("gulp-if"),
     gutil = require("gulp-util"),
@@ -55,6 +56,15 @@
       .pipe( eslint() )
       .pipe( eslint.format() )
       .pipe( eslint.failAfterError() );
+  });
+
+  gulp.task("version", function () {
+    var pkg = require("./package.json"),
+      str = '/* exported version */\n' +
+        'var version = "' + pkg.version + '";';
+
+    return file("version.js", str, {src: true})
+      .pipe(gulp.dest("./src/config/"));
   });
 
   gulp.task("source", ["lint"], () => {
@@ -189,11 +199,11 @@
   });
 
   gulp.task("build-dev", (cb) => {
-    runSequence(["clean", "config"], ["source", "fonts", "images", "i18n", "vendor"], ["unminify"], cb);
+    runSequence(["clean", "config", "version"], ["source", "fonts", "images", "i18n", "vendor"], ["unminify"], cb);
   });
 
   gulp.task("build", (cb) => {
-    runSequence(["clean", "config", "bower-update"], ["source", "fonts", "images", "i18n", "vendor"], ["unminify"], cb);
+    runSequence(["clean", "config", "bower-update", "version"], ["source", "fonts", "images", "i18n", "vendor"], ["unminify"], cb);
   });
 
   gulp.task("bump", () => {
@@ -203,7 +213,7 @@
   });
 
   gulp.task("test", (cb) => {
-    runSequence("test:unit", "test:e2e", "test:integration", cb);
+    runSequence("version", "test:unit", "test:e2e", "test:integration", cb);
   });
 
   gulp.task("default", [], () => {

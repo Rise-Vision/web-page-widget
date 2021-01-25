@@ -1,4 +1,4 @@
-/* global RiseVision, gadgets */
+/* global RiseVision, gadgets, version */
 
 ( function( window, document, gadgets ) {
   "use strict";
@@ -36,6 +36,8 @@
 
       // provide LoggerUtils the ids to use
       RiseVision.Common.LoggerUtils.setIds( companyId, displayId );
+      RiseVision.Common.LoggerUtils.setVersion( version );
+
 
       // additional params
       if ( names[ 2 ] === "additionalParams" ) {
