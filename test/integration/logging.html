@@ -71,7 +71,6 @@
       test("should log the configuration event", function() {
         params.event = "configuration";
         params.event_details = JSON.stringify( window.gadget.settings.additionalParams );
-        assert(spy.calledOnce);
         assert(spy.calledWith(table, params, endpointParams));
       });
     });
