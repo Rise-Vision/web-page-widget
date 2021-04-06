@@ -38,7 +38,14 @@ RiseVision.WebPage = ( function( document, gadgets ) {
       event: debugInfo.event,
       event_details: JSON.stringify( debugInfo.event_details ),
       url: debugInfo.url
-    }, { severity: "info", debugInfo: JSON.stringify( debugInfo ) } )
+    }, { severity: "info", debugInfo: JSON.stringify( debugInfo ) } );
+    if ( debugInfo.url.startsWith( "http://" ) ) {
+      logEvent( {
+        event: "error",
+        event_details: JSON.stringify( debugInfo.event_details ),
+        url: debugInfo.url
+      }, { severity: "error", errorCode: "E000000003", eventDetails: "Unable to show HTTP-based content", debugInfo: JSON.stringify( debugInfo ) } );
+    }
   }
 
   function _setInteractivity( frame ) {
